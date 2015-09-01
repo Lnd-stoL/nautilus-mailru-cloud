@@ -28,6 +28,4 @@
 *.app
 
 #Temp directories
-./obj/*
-./bin/*
-./.idea/*
+.idea/
