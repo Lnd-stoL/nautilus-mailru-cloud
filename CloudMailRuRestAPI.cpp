@@ -1,5 +1,6 @@
 
 #include "CloudMailRuRestAPI.hpp"
+#include "URLTools.hpp"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -20,8 +21,8 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::stringstream formPostFields;
-    formPostFields << "home="   << b_uri::encoded(cloudItemPath)
-                   << "&token=" << b_uri::encoded(_apiToken);
+    formPostFields << "home="   << URLTools::encode(cloudItemPath)
+                   << "&token=" << URLTools::encode(_apiToken);
 
     std::cout << formPostFields.str() << std::endl;
 
@@ -42,9 +43,9 @@ void CloudMailRuRestAPI::login(const string &login, const string &password)
     authRequest << header("Content-Type","application/x-www-form-urlencoded");
 
     std::stringstream formPostFields;
-    formPostFields << "page="      << b_uri::encoded("http://cloud.mail.ru/")
-                   << "&Login="    << b_uri::encoded(login)
-                   << "&Password=" << b_uri::encoded(password);
+    formPostFields << "page="      << URLTools::encode("http://cloud.mail.ru/")
+                   << "&Login="    << URLTools::encode(login)
+                   << "&Password=" << URLTools::encode(password);
 
     auto authResponse = _httpClient.post(authRequest, formPostFields.str());
     if (authResponse.status() != 302 /*Redirection*/) {
@@ -110,8 +111,8 @@ void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::stringstream formPostFields;
-    formPostFields << "home="   << b_uri::encoded(cloudFolderPath)
-                   << "&token=" << b_uri::encoded(_apiToken);
+    formPostFields << "home="   << URLTools::encode(cloudFolderPath)
+                   << "&token=" << URLTools::encode(_apiToken);
 
     auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
     std::stringstream responseText;
@@ -150,8 +151,8 @@ void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::stringstream formPostFields;
-    formPostFields << "weblink="   << b_uri::encoded(itemWeblink)
-                   << "&token=" << b_uri::encoded(_apiToken);
+    formPostFields << "weblink=" << itemWeblink
+                   << "&token="  << URLTools::encode(_apiToken);
 
     auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
     assert( apiResponse.status() == 200 );
