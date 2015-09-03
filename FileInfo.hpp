@@ -15,13 +15,14 @@ namespace b_fs = boost::filesystem;
 class FileInfo
 {
 public:
-    enum sync_state { UNKNOWN, IN_PROGRESS, ACTUAL };
+    enum sync_state { UNKNOWN, IN_PROGRESS, ACTUAL, ACTUAL_SHARED };
 
 public:
     virtual string uri()  const = 0;
     virtual string path() const = 0;
 
     virtual void setSyncState(sync_state state) = 0;
+    virtual bool isStillShowed() = 0;
 
 
 public:

@@ -30,5 +30,5 @@ include_directories(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES NautilusExtension.cpp GUIProvider.cpp GUIProvider.hpp)
-add_executable(nautilus_mailru_cloud ${SOURCE_FILES} boost_headers.hpp extension_info.hpp CloudMailRuExtension.cpp CloudMailRuExtension.hpp MenuItem.cpp MenuItem.hpp FileInfo.hpp Clipboard.cpp Clipboard.hpp Test.cpp CloudMailRuRestAPI.cpp CloudMailRuRestAPI.hpp)
+add_executable(nautilus_mailru_cloud ${SOURCE_FILES} boost_headers.hpp extension_info.hpp CloudMailRuExtension.cpp CloudMailRuExtension.hpp MenuItem.hpp FileInfo.hpp Test.cpp CloudMailRuRestAPI.cpp CloudMailRuRestAPI.hpp)
 target_link_libraries(nautilus_mailru_cloud $(pkg-config libnautilus-extension --libs) -lboost_filesystem -lboost_system -lboost_thread -lcppnetlib-client-connections -lcppnetlib-server-parsers -lcppnetlib-uri)

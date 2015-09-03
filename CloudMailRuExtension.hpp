@@ -16,13 +16,13 @@
 #include <condition_variable>
 #include <mutex>
 #include <functional>
-#include <list>
+#include <set>
+#include <unordered_set>
 
 using std::vector;
 using std::pair;
 using std::function;
 using std::list;
-using std::unordered_map;
 
 using namespace std::chrono;
 
@@ -60,11 +60,16 @@ public:
 private:
     struct _AsyncTask
     {
+        unsigned long  taskNumber;
+        time_point<system_clock>  startTime;
         string  id;
         function<void()>  task;
 
-        bool operator== (const _AsyncTask& at) {
-            return id == at.id;
+
+        bool operator< (const _AsyncTask& at) const {
+            if (startTime == at.startTime)
+                return taskNumber < at.taskNumber;
+            return startTime < at.startTime;
         }
     };
 
@@ -77,10 +82,12 @@ private:
     string  _mailRuUserName;
     b_pt::ptree  _config;
 
-    unordered_map<string, CloudMailRuRestAPI::CloudFileInfo>  _cachedCloudFiles;
+    std::unordered_map<string, CloudMailRuRestAPI::CloudFileInfo>  _cachedCloudFiles;
 
     bool  _running = true;
-    list<_AsyncTask>  _asyncTasksQueue;
+    unsigned long  _taskCounter = 1;
+    std::set<_AsyncTask>  _asyncTasksQueue;
+    std::unordered_set<string>  _asyncTasksSet;
     std::condition_variable  _tasksUpdateTrigger;
     std::mutex  _tasksAccessLocker;
 
@@ -90,14 +97,17 @@ private:
     string _configFileName();
     bool _readConfiguration();
     void _saveConfiguration();
+    bool _isOneOfCloudHiddenSystemFiles(const string& cloudFilePath);
     static b_fs::path _userHomeDirPath();
     string _cloudPath(const FileInfo &file);
 
     void _netUpdateDirectory(const string &dirName);
     bool _updateFileSyncState(FileInfo &file);
 
-    void _enqueueAsyncTask(const string &id, function<void()> task);
+    void _enqueueAsyncTask(const string &id, time_point<system_clock> startTime, function<void()> task);
     bool _isTaskOnQueue(const string &id);
+
+    void _fileUpdateTask(FileInfo *file, string fileCloudDir);
 
 
 public:

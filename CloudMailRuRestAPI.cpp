@@ -17,7 +17,7 @@ using b_network::body;
 string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
 {
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/publish", true);
-    apiRequest << header("Content-Type", "application/x-www-form-urlencoded");
+    apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::stringstream formPostFields;
     formPostFields << "home="   << b_uri::encoded(cloudItemPath)
@@ -107,7 +107,7 @@ void CloudMailRuRestAPI::_storeCookies(const b_http::client::response &response)
 void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items)
 {
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/folder", true);
-    apiRequest << header("Content-Type", "application/x-www-form-urlencoded");
+    apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::stringstream formPostFields;
     formPostFields << "home="   << b_uri::encoded(cloudFolderPath)
@@ -135,8 +135,24 @@ void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
             fileInfo.mtime = fileJSON.second.get<unsigned>("mtime");
         }
 
-        //if (fileJSON.second.)
+        if (fileJSON.second.find("weblink") != fileJSON.second.not_found()) {
+            fileInfo.weblink = fileJSON.second.get<string>("weblink");
+        }
 
         items.push_back(std::move(fileInfo));
     }
+}
+
+
+void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
+{
+    b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/unpublish", true);
+    apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+    std::stringstream formPostFields;
+    formPostFields << "weblink="   << b_uri::encoded(itemWeblink)
+                   << "&token=" << b_uri::encoded(_apiToken);
+
+    auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
+    assert( apiResponse.status() == 200 );
 }

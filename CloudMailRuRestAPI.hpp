@@ -46,6 +46,7 @@ public:
     void login(const string& login, const string &password);
 
     string getPublicLinkTo(const string &cloudItemPath);
+    void removePublicLinkTo(const string &itemWeblink);
     void getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items);
 };
 

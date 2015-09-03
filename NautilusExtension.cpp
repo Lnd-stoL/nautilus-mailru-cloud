@@ -84,6 +84,13 @@ namespace nautilus_extension
             if (state == FileInfo::sync_state::IN_PROGRESS) {
                 nautilus_file_info_add_emblem(_fileInfo, "stock_refresh");
             }
+            if (state == FileInfo::sync_state::ACTUAL_SHARED) {
+                nautilus_file_info_add_emblem(_fileInfo, "applications-roleplaying");
+            }
+        }
+
+        inline virtual bool isStillShowed() {
+            return ! (bool) nautilus_file_info_is_gone(_fileInfo);
         }
     };
 
@@ -255,7 +262,7 @@ void nautilus_extension::onMenuItemClick(NautilusMenuItem *item, gpointer user_d
     auto *handler = (FileContextMenuItem::click_handler_t *)g_object_get_data((GObject *)item, "click_handler");
 
     NautilusFileInfo_Glue fileInfo(NAUTILUS_FILE_INFO(files->data));
-    (*handler)(fileInfo);
+    (*handler)();
     delete handler;
 }
 

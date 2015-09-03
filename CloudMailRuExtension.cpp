@@ -29,16 +29,23 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
 
         while (_running) {
             std::unique_lock<std::mutex> lock(_tasksAccessLocker);
-            _tasksUpdateTrigger.wait(lock);
 
-            while (!_asyncTasksQueue.empty()) {
+            if (_asyncTasksQueue.empty()) {
+                _tasksUpdateTrigger.wait(lock);
+            } else {
+                _tasksUpdateTrigger.wait_until(lock, _asyncTasksQueue.begin()->startTime);
+            }
+
+            while (!_asyncTasksQueue.empty() &&
+                    _asyncTasksQueue.begin()->startTime <= system_clock::now()) {
+
                 auto nextTaskIt = _asyncTasksQueue.begin();
-
                 lock.unlock();
                 nextTaskIt->task();
                 lock.lock();
 
-                _asyncTasksQueue.pop_front();
+                _asyncTasksSet.erase(nextTaskIt->id);
+                _asyncTasksQueue.erase(nextTaskIt);
             }
         }
     }).detach();
@@ -53,10 +60,14 @@ void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vect
     string fileName = file.pathInfo().filename().string();
     string fileCloudPath = _cloudPath(file);
 
+    if (_isOneOfCloudHiddenSystemFiles(fileCloudPath))
+        return;    // system hidden files are never synced
+
+    // get public link menu item
     static const string publicLinkText = "Get public link to \"";
     items.emplace_back(publicLinkText + fileName + '"', "GetPublicLink");
 
-    auto asyncTask =  [this, fileCloudPath, fileName]() {
+    auto getLinkTask =  [this, fileCloudPath, fileName]() {
         string link = _cloudAPI.getPublicLinkTo(fileCloudPath);
         std::cout << extension_info::logPrefix << "got publink link to " << fileCloudPath << " : " << link << std::endl;
 
@@ -65,9 +76,25 @@ void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vect
     };
 
     items.back().onClick(
-        [this, fileCloudPath, asyncTask]() {
-            _enqueueAsyncTask(fileCloudPath + "#weblink", asyncTask);
+        [this, fileCloudPath, getLinkTask]() {
+            _enqueueAsyncTask(fileCloudPath + "#weblink-get", system_clock::now(), getLinkTask);
         });
+
+
+    // remove public link menu item
+    if (_cachedCloudFiles[fileCloudPath].weblink != "") {
+        items.emplace_back("Remove public link", "RemovePublicLink");
+
+        auto removeLinkTask =  [this, fileCloudPath, fileName]() {
+            _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
+            _gui->showCopyPublicLinkNotification(string("Publink link to '") + fileName + "' removed.");
+        };
+
+        items.back().onClick(
+            [this, fileCloudPath, removeLinkTask]() {
+                _enqueueAsyncTask(fileCloudPath + "#weblink-remove", system_clock::now(), removeLinkTask);
+            });
+    }
 }
 
 
@@ -101,16 +128,16 @@ void CloudMailRuExtension::updateFileInfo(FileInfo *file)
     string fileCloudPath = _cloudPath(*file);
     string fileCloudDir = b_fs::path(fileCloudPath).parent_path().string();
 
+    if (_isOneOfCloudHiddenSystemFiles(fileCloudPath))
+        return;    // system hidden files are never synced
+
     if (!_isTaskOnQueue(fileCloudDir)) {    // this is to prevent directory net update for each file in a folder
-        _enqueueAsyncTask(fileCloudDir, [this, fileCloudDir]() {
-            _netUpdateDirectory(fileCloudDir);
-        });
+        _enqueueAsyncTask(fileCloudDir, system_clock::now(),
+                          std::bind(&CloudMailRuExtension::_netUpdateDirectory, this, fileCloudDir));
     }
 
-    _enqueueAsyncTask(fileCloudDir, [this, file]() {
-        _updateFileSyncState(*file);
-        delete file;
-    });
+    _enqueueAsyncTask(fileCloudDir + "#" + fileCloudPath, system_clock::now(),
+                      std::bind(&CloudMailRuExtension::_fileUpdateTask, this, file, fileCloudDir));
 }
 
 
@@ -160,7 +187,11 @@ bool CloudMailRuExtension::_updateFileSyncState(FileInfo &file)
 
     } else {
         if (std::abs(b_fs::last_write_time(file.pathInfo()) - cachedFileInfo->second.mtime) < 1) {
-            file.setSyncState(FileInfo::ACTUAL);
+            if (cachedFileInfo->second.weblink != "") {
+                file.setSyncState(FileInfo::ACTUAL_SHARED);
+            } else {
+                file.setSyncState(FileInfo::ACTUAL);
+            }
             return false;
         } else {
             file.setSyncState(FileInfo::IN_PROGRESS);
@@ -170,14 +201,18 @@ bool CloudMailRuExtension::_updateFileSyncState(FileInfo &file)
 }
 
 
-void CloudMailRuExtension::_enqueueAsyncTask(const string &id, function<void()> task)
+void CloudMailRuExtension::_enqueueAsyncTask(const string &id, time_point<system_clock> startTime, function<void()> task)
 {
     _tasksAccessLocker.lock();
 
     _AsyncTask newTask = {};
     newTask.id = id;
     newTask.task = task;
-    _asyncTasksQueue.push_back(std::move(newTask));
+    newTask.startTime = startTime;
+    newTask.taskNumber = _taskCounter++;
+
+    _asyncTasksQueue.insert(std::move(newTask));
+    _asyncTasksSet.insert(id);
 
     _tasksAccessLocker.unlock();
     _tasksUpdateTrigger.notify_all();
@@ -219,11 +254,7 @@ string CloudMailRuExtension::_configFileName()
 bool CloudMailRuExtension::_isTaskOnQueue(const string &id)
 {
     std::unique_lock<std::mutex> lock(_tasksAccessLocker);
-
-    _AsyncTask fakeTask;
-    fakeTask.id = id;
-
-    return std::find(_asyncTasksQueue.begin(), _asyncTasksQueue.end(), fakeTask) != _asyncTasksQueue.end();
+    return _asyncTasksSet.find(id) != _asyncTasksSet.end();
 }
 
 
@@ -231,4 +262,34 @@ CloudMailRuExtension::~CloudMailRuExtension()
 {
     _running = false;
     _tasksUpdateTrigger.notify_all();
+}
+
+
+void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir)
+{
+    int updateTimeoutMs = 8000;
+
+    if (!file->isStillShowed()) {
+        delete file;
+        std::cout << fileCloudDir << " is gone " << std::endl;
+        return;
+    }
+
+    if (_updateFileSyncState(*file)) {
+        if (!_isTaskOnQueue(fileCloudDir)) {
+            _enqueueAsyncTask(fileCloudDir, system_clock::now() + milliseconds(updateTimeoutMs),
+                              std::bind(&CloudMailRuExtension::_netUpdateDirectory, this, fileCloudDir));
+        }
+
+        _enqueueAsyncTask(fileCloudDir + "#" + _cloudPath(*file), system_clock::now() + milliseconds(updateTimeoutMs),
+                          std::bind(&CloudMailRuExtension::_fileUpdateTask, this, file, fileCloudDir));
+    } else {
+        delete file;
+    }
+}
+
+
+bool CloudMailRuExtension::_isOneOfCloudHiddenSystemFiles(const string &cloudFilePath)
+{
+    return cloudFilePath == "/.cloud" || cloudFilePath == "/.cloud_ss";
 }
