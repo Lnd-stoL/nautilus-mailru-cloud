@@ -64,15 +64,15 @@ void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vect
         return;    // system hidden files are never synced
 
     // get public link menu item
-    static const string publicLinkText = "Get public link to \"";
-    items.emplace_back(publicLinkText + fileName + '"', "GetPublicLink");
+    static const string publicLinkText = "Копировать общедоступную ссылку на '";
+    items.emplace_back(publicLinkText + fileName + '\'', "GetPublicLink");
 
     auto getLinkTask =  [this, fileCloudPath, fileName]() {
         string link = _cloudAPI.getPublicLinkTo(fileCloudPath);
         std::cout << extension_info::logPrefix << "got publink link to " << fileCloudPath << " : " << link << std::endl;
 
         _gui->copyToClipboard(link);
-        _gui->showCopyPublicLinkNotification(string("Publink link to '") + fileName + "' copied to clipboard.");
+        _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
     };
 
     items.back().onClick(
@@ -83,7 +83,7 @@ void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vect
 
     // remove public link menu item
     if (_cachedCloudFiles[fileCloudPath].weblink != "") {
-        items.emplace_back("Remove public link", "RemovePublicLink");
+        items.emplace_back("Прекратить общий доступ", "RemovePublicLink");
 
         auto removeLinkTask =  [this, fileCloudPath, fileName]() {
             _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
@@ -183,8 +183,6 @@ bool CloudMailRuExtension::_updateFileSyncState(FileInfo &file)
     auto cachedFileInfo = _cachedCloudFiles.find(fileCloudPath);
     if (cachedFileInfo == _cachedCloudFiles.end()) {
         file.setSyncState(FileInfo::IN_PROGRESS);
-        return true;
-
     } else {
         if (std::abs(b_fs::last_write_time(file.pathInfo()) - cachedFileInfo->second.mtime) < 1) {
             if (cachedFileInfo->second.weblink != "") {
@@ -192,12 +190,12 @@ bool CloudMailRuExtension::_updateFileSyncState(FileInfo &file)
             } else {
                 file.setSyncState(FileInfo::ACTUAL);
             }
-            return false;
         } else {
             file.setSyncState(FileInfo::IN_PROGRESS);
-            return true;
         }
     }
+
+    return file.syncState() == FileInfo::IN_PROGRESS;
 }
 
 
@@ -267,9 +265,9 @@ CloudMailRuExtension::~CloudMailRuExtension()
 
 void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir)
 {
-    int updateTimeoutMs = 8000;
+    int updateTimeoutMs = 10000;
 
-    if (!file->isStillShowed()) {
+    if (!file->isStillActual()) {
         delete file;
         std::cout << fileCloudDir << " is gone " << std::endl;
         return;

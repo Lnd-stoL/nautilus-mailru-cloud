@@ -76,20 +76,40 @@ namespace nautilus_extension
         }
 
 
-        inline virtual void setSyncState(sync_state state) {
-            if (state == FileInfo::sync_state::ACTUAL) {
-                nautilus_file_info_add_emblem(_fileInfo, "stock_calc-accept");
+        inline virtual bool setSyncState(sync_state_t state) {
+            auto prevSyncState = _syncState;
+
+            if (FileInfo::setSyncState(state)) {
+
+                if (prevSyncState != UNKNOWN) {    // this is to fix the emblems doubleing
+                    invalidateExtensionInfo();
+                    return true;
+                }
+
+                if (state == FileInfo::sync_state_t::ACTUAL) {
+                    nautilus_file_info_add_emblem(_fileInfo, "stock_calc-accept");
+                }
+                if (state == FileInfo::sync_state_t::IN_PROGRESS) {
+                    nautilus_file_info_add_emblem(_fileInfo, "stock_refresh");
+                }
+                if (state == FileInfo::sync_state_t::ACTUAL_SHARED) {
+                    nautilus_file_info_add_emblem(_fileInfo, "applications-roleplaying");
+                }
+
+                return true;
             }
-            if (state == FileInfo::sync_state::IN_PROGRESS) {
-                nautilus_file_info_add_emblem(_fileInfo, "stock_refresh");
-            }
-            if (state == FileInfo::sync_state::ACTUAL_SHARED) {
-                nautilus_file_info_add_emblem(_fileInfo, "applications-roleplaying");
-            }
+
+            return false;
         }
 
-        inline virtual bool isStillShowed() {
+
+        inline virtual bool isStillActual() {
             return ! (bool) nautilus_file_info_is_gone(_fileInfo);
+        }
+
+
+        inline virtual void invalidateExtensionInfo() {
+            nautilus_file_info_invalidate_extension_info(_fileInfo);
         }
     };
 
@@ -231,7 +251,8 @@ GList* nautilus_extension::getFilesMenuItems(NautilusMenuProvider *provider, Gtk
     if (items.empty())  return nullptr;   // no menu items to add
 
     NautilusMenuItem *mailruSubmenuItem = nautilus_menu_item_new("CloudMailRuExtension::MailRuSubmenu", "Cloud@Mail.Ru",
-                                                    "Cloud@Mail.Ru related actions", nullptr);
+                                                    "Cloud@Mail.Ru related actions",
+                                                    nullptr);
     NautilusMenu *mailruSubmenu = nautilus_menu_new();
     nautilus_menu_item_set_submenu(mailruSubmenuItem, mailruSubmenu);
     GList *itemsList = g_list_append(nullptr, mailruSubmenuItem);
@@ -239,7 +260,7 @@ GList* nautilus_extension::getFilesMenuItems(NautilusMenuProvider *provider, Gtk
     for (auto const & absItem : items) {
         static const string itemIdStrPrefix = "CloudMailRuExtension::";
         NautilusMenuItem *item = nautilus_menu_item_new((itemIdStrPrefix + absItem.name()).c_str(), absItem.title().c_str(),
-                                      absItem.description().c_str(), nullptr);
+                                      absItem.description().c_str(), (absItem.icon() == "" ? nullptr : absItem.icon().c_str()));
 
         g_signal_connect(item, "activate", G_CALLBACK(nautilus_extension::onMenuItemClick), provider);
         g_object_set_data_full((GObject *)item, "files_list",

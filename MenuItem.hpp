@@ -17,11 +17,12 @@ private:
     string _title;
     string _name;
     string _description;
+    string _icon;
 
 
 public:
-    MenuItem(const string &&title, const string&& name, const string && desc = "") :
-            _title(title), _name(name), _description(desc)
+    MenuItem(const string &&title, const string&& name, const string &&icon = "", const string && desc = "") :
+            _title(title), _name(name), _description(desc), _icon(icon)
     { }
 
 public:
@@ -36,6 +37,10 @@ public:
     inline const string& description() const {
         return _description;
     }
+
+    inline const string& icon() const {
+        return _icon;
+    }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -46,12 +51,12 @@ public:
     typedef function<void()> click_handler_t;
 
 private:
-    click_handler_t _handler;
+    click_handler_t  _handler;
 
 
 public:
-    FileContextMenuItem(const string &&title, const string&& name, const string && desc = "") :
-            MenuItem(std::move(title), std::move(name), std::move(desc))
+    FileContextMenuItem(const string &&title, const string&& name, const string &&icon = "", const string &&desc = "") :
+            MenuItem(std::move(title), std::move(name), std::move(icon), std::move(desc))
     { }
 
     void onClick(click_handler_t handler) {

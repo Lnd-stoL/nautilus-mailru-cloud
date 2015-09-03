@@ -20,7 +20,7 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/publish", true);
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
-    std::stringstream formPostFields;
+    std::ostringstream formPostFields;
     formPostFields << "home="   << URLTools::encode(cloudItemPath)
                    << "&token=" << URLTools::encode(_apiToken);
 
@@ -42,7 +42,7 @@ void CloudMailRuRestAPI::login(const string &login, const string &password)
     b_http::client::request authRequest = _requestWithDefaultHdrs("http://auth.mail.ru/cgi-bin/auth");
     authRequest << header("Content-Type","application/x-www-form-urlencoded");
 
-    std::stringstream formPostFields;
+    std::ostringstream formPostFields;
     formPostFields << "page="      << URLTools::encode("http://cloud.mail.ru/")
                    << "&Login="    << URLTools::encode(login)
                    << "&Password=" << URLTools::encode(password);
@@ -66,19 +66,17 @@ void CloudMailRuRestAPI::login(const string &login, const string &password)
     auto tokenValBegin = tokenPos + (int) strlen(tokenSearchPattern);
     auto tokenValEnd = cloudHomeResponse.body().find('"', tokenValBegin);
     _apiToken = cloudHomeResponse.body().substr(tokenValBegin, tokenValEnd - tokenValBegin);
-
-    //std::cout << _apiToken << std::endl << std::endl;
 }
 
 
 b_http::client::request CloudMailRuRestAPI::_requestWithDefaultHdrs(const string &uri, bool includeCookies)
 {
     b_http::client::request req(uri);
-    req << header("Connection", "close")
+    req /* << header("Connection", "close") */
         << header("User-Agent", _userAgent);
 
     if (includeCookies) {
-        std::stringstream cookieHeader;
+        std::ostringstream cookieHeader;
 
         for (const auto& cookie: _cookies) {
             cookieHeader << cookie.first << '=' << cookie.second << "; ";
@@ -110,7 +108,7 @@ void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/folder", true);
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
-    std::stringstream formPostFields;
+    std::ostringstream formPostFields;
     formPostFields << "home="   << URLTools::encode(cloudFolderPath)
                    << "&token=" << URLTools::encode(_apiToken);
 
@@ -150,7 +148,7 @@ void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/unpublish", true);
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
-    std::stringstream formPostFields;
+    std::ostringstream formPostFields;
     formPostFields << "weblink=" << itemWeblink
                    << "&token="  << URLTools::encode(_apiToken);
 
