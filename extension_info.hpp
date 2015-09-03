@@ -7,7 +7,7 @@
 namespace extension_info
 {
     static const char *authors       = "Leonid Stolyarov (aka Lnd-stoL); Alexey Gusev (aka Mad-Gooze)";
-    static const char *versionString = "developement-cpp";
+    static const char *versionString = "debug";
 
     static const char *logPrefix     = "nautilus-cloud@mail.ru: ";
 }

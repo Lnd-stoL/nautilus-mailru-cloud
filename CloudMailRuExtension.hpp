@@ -114,8 +114,16 @@ public:
     CloudMailRuExtension(GUIProvider *guiProvider);
     ~CloudMailRuExtension();
 
-    void getContextMenuItemsForFile(const FileInfo &file, vector<FileContextMenuItem> &items);
+    // This methods are designed to take ownership of FileInfo and the responsibility to release it.
+    // That was done in order to enable asynchrounus operations with FileInfo.
+    void getContextMenuItemsForFile(FileInfo *file, vector<FileContextMenuItem> &items);
     void updateFileInfo(FileInfo *file);
+
+
+public:
+    inline const b_pt::ptree& config() const {
+        return _config;
+    }
 };
 
 //----------------------------------------------------------------------------------------------------------------------

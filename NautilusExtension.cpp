@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <string>
+using std::string;
 
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
@@ -9,11 +11,17 @@
 #include "CloudMailRuExtension.hpp"
 #include "URLTools.hpp"
 
+#include <boost/property_tree/ptree.hpp>
+namespace b_pt = boost::property_tree;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 namespace nautilus_extension
 {
     static GType extensionExportedType;
+
+    // access to global extension class instance
+    CloudMailRuExtension *singleExtensionInstance = nullptr;
 
 
     struct CloudMailRuExtension_Glue
@@ -87,13 +95,16 @@ namespace nautilus_extension
                 }
 
                 if (state == FileInfo::sync_state_t::ACTUAL) {
-                    nautilus_file_info_add_emblem(_fileInfo, "stock_calc-accept");
+                    nautilus_file_info_add_emblem(_fileInfo,
+                                                  singleExtensionInstance->config().get<string>("Emblems.sync_completed").c_str());
                 }
                 if (state == FileInfo::sync_state_t::IN_PROGRESS) {
-                    nautilus_file_info_add_emblem(_fileInfo, "stock_refresh");
+                    nautilus_file_info_add_emblem(_fileInfo,
+                                                  singleExtensionInstance->config().get<string>("Emblems.sync_in_progress").c_str());
                 }
                 if (state == FileInfo::sync_state_t::ACTUAL_SHARED) {
-                    nautilus_file_info_add_emblem(_fileInfo, "applications-roleplaying");
+                    nautilus_file_info_add_emblem(_fileInfo,
+                                                  singleExtensionInstance->config().get<string>("Emblems.sync_shared").c_str());
                 }
 
                 return true;
@@ -204,6 +215,7 @@ void nautilus_extension::instanceInit(CloudMailRuExtension_Glue *extensionInstan
     try {
         extensionInstance->guiProvider = new GUIProviderGtk();
         extensionInstance->extension = new CloudMailRuExtension(extensionInstance->guiProvider);
+        nautilus_extension::singleExtensionInstance = extensionInstance->extension;
     }
     catch(CloudMailRuExtension::Error extensionErr) {
         std::cout << "!" << std::endl;
@@ -247,7 +259,8 @@ GList* nautilus_extension::getFilesMenuItems(NautilusMenuProvider *provider, Gtk
     if (extension == nullptr)  return nullptr;   // no valid initialized extension class
 
     vector<FileContextMenuItem> items;
-    extension->getContextMenuItemsForFile(NautilusFileInfo_Glue(NAUTILUS_FILE_INFO(files->data)), items);
+    auto fileInfo = new NautilusFileInfo_Glue(NAUTILUS_FILE_INFO(files->data));
+    extension->getContextMenuItemsForFile(fileInfo, items);
     if (items.empty())  return nullptr;   // no menu items to add
 
     NautilusMenuItem *mailruSubmenuItem = nautilus_menu_item_new("CloudMailRuExtension::MailRuSubmenu", "Cloud@Mail.Ru",

@@ -1,7 +1,6 @@
 
 #include "CloudMailRuExtension.hpp"
 #include "extension_info.hpp"
-#include "GUIProvider.hpp"
 
 #include <unistd.h>
 #include <pwd.h>
@@ -52,13 +51,13 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
 }
 
 
-void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vector<FileContextMenuItem> &items)
+void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<FileContextMenuItem> &items)
 {
-    if (file.path().find(_localCloudDir) != 0)
+    if (file->path().find(_localCloudDir) != 0)
         return;    // no items outside cloud dir
 
-    string fileName = file.pathInfo().filename().string();
-    string fileCloudPath = _cloudPath(file);
+    string fileName = file->pathInfo().filename().string();
+    string fileCloudPath = _cloudPath(*file);
 
     if (_isOneOfCloudHiddenSystemFiles(fileCloudPath))
         return;    // system hidden files are never synced
@@ -67,12 +66,15 @@ void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vect
     static const string publicLinkText = "Копировать общедоступную ссылку на '";
     items.emplace_back(publicLinkText + fileName + '\'', "GetPublicLink");
 
-    auto getLinkTask =  [this, fileCloudPath, fileName]() {
+    auto getLinkTask =  [this, file, fileCloudPath, fileName]() {
         string link = _cloudAPI.getPublicLinkTo(fileCloudPath);
         std::cout << extension_info::logPrefix << "got publink link to " << fileCloudPath << " : " << link << std::endl;
 
         _gui->copyToClipboard(link);
         _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
+
+        file->invalidateExtensionInfo();
+        delete file;
     };
 
     items.back().onClick(
@@ -85,9 +87,12 @@ void CloudMailRuExtension::getContextMenuItemsForFile(const FileInfo &file, vect
     if (_cachedCloudFiles[fileCloudPath].weblink != "") {
         items.emplace_back("Прекратить общий доступ", "RemovePublicLink");
 
-        auto removeLinkTask =  [this, fileCloudPath, fileName]() {
+        auto removeLinkTask =  [this, file, fileCloudPath, fileName]() {
             _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
             _gui->showCopyPublicLinkNotification(string("Publink link to '") + fileName + "' removed.");
+
+            file->invalidateExtensionInfo();
+            delete file;
         };
 
         items.back().onClick(
@@ -265,11 +270,11 @@ CloudMailRuExtension::~CloudMailRuExtension()
 
 void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir)
 {
-    int updateTimeoutMs = 10000;
+    int updateTimeoutMs = _config.get<int>("SyncTweaks.in_progress_update_interval");
 
     if (!file->isStillActual()) {
         delete file;
-        std::cout << fileCloudDir << " is gone " << std::endl;
+        //std::cout << fileCloudDir << " is gone " << std::endl;
         return;
     }
 
