@@ -229,8 +229,7 @@ void CloudMailRuExtension::_enqueueAsyncTask(const string &id, time_point<system
 bool CloudMailRuExtension::_readConfiguration()
 {
     if (!b_fs::exists(_configFileName())) {
-        //TODO: configure
-
+        _writeDefaultConfig();
         _saveConfiguration();
     }
 
@@ -238,8 +237,8 @@ bool CloudMailRuExtension::_readConfiguration()
         b_pt::read_ini(_configFileName(), _config);
     }
     catch (const std::exception &parserErr) {
-        std::cout << extension_info::logPrefix << "error while reading config: " << parserErr.what() << std::endl;
-        throw Error(Error::CONFIG_ERROR, string("exception thrown: ") + parserErr.what());
+        std::cout << extension_info::logPrefix << "error while parsing config file: " << parserErr.what() << std::endl;
+        throw Error(Error::CONFIG_ERROR, string("exception thrown while parsing config: ") + parserErr.what());
     }
 
     return true;
@@ -248,7 +247,13 @@ bool CloudMailRuExtension::_readConfiguration()
 
 void CloudMailRuExtension::_saveConfiguration()
 {
-    b_pt::write_ini(_configFileName(), _config);
+    try {
+        b_pt::write_ini(_configFileName(), _config);
+    }
+    catch (const std::exception &parserErr) {
+        std::cout << extension_info::logPrefix << "error while saving config file: " << parserErr.what() << std::endl;
+        throw Error(Error::CONFIG_ERROR, string("exception thrown while saving config: ") + parserErr.what());
+    }
 }
 
 
@@ -299,4 +304,16 @@ void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir)
 bool CloudMailRuExtension::_isOneOfCloudHiddenSystemFiles(const string &cloudFilePath)
 {
     return cloudFilePath == "/.cloud" || cloudFilePath == "/.cloud_ss";
+}
+
+
+void CloudMailRuExtension::_writeDefaultConfig()
+{
+    _config.add("User.password", "unknown");
+
+    _config.add("Emblems.sync_completed", "stock_calc-accept");
+    _config.add("Emblems.sync_in_progress", "stock_refresh");
+    _config.add("Emblems.sync_shared", "applications-roleplayingt");
+
+    _config.add("SyncTweaks.in_progress_update_interval", 8000);
 }
