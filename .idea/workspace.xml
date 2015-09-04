@@ -12,8 +12,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73f9cb82-7c44-469a-a4ec-db0dc6a33726" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nautilus_mailru_cloud_gtk_gui_services.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CloudMailRuExtension.cpp" afterPath="$PROJECT_DIR$/CloudMailRuExtension.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CloudMailRuExtension.hpp" afterPath="$PROJECT_DIR$/CloudMailRuExtension.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CloudMailRuRestAPI.cpp" afterPath="$PROJECT_DIR$/CloudMailRuRestAPI.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CloudMailRuRestAPI.hpp" afterPath="$PROJECT_DIR$/CloudMailRuRestAPI.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GUIProvider.cpp" afterPath="$PROJECT_DIR$/GUIProvider.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GUIProvider.hpp" afterPath="$PROJECT_DIR$/GUIProvider.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Makefile" afterPath="$PROJECT_DIR$/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/extension_info.hpp" afterPath="$PROJECT_DIR$/extension_info.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="nautilus-mailru-cloud.iws" />
@@ -55,10 +62,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CloudMailRuExtension.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CloudMailRuExtension.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.45572355">
+            <state vertical-scroll-proportion="0.0">
               <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
               <folding />
             </state>
@@ -69,7 +76,7 @@
         <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.hpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="98" column="12" selection-start-line="98" selection-start-column="12" selection-end-line="98" selection-end-column="12" />
+              <caret line="99" column="19" selection-start-line="99" selection-start-column="19" selection-end-line="99" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -79,9 +86,9 @@
         <entry file="file://$PROJECT_DIR$/GUIProvider.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+              <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
               <folding>
-                <element signature="e#794#1041#0" expanded="true" />
+                <element signature="e#816#1063#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,7 +98,17 @@
         <entry file="file://$PROJECT_DIR$/GUIProvider.hpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="extension_info.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/extension_info.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -101,17 +118,17 @@
         <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.hpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <caret line="46" column="14" selection-start-line="46" selection-start-column="14" selection-end-line="46" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CloudMailRuRestAPI.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CloudMailRuRestAPI.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.3347732">
+              <caret line="158" column="0" selection-start-line="158" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -143,18 +160,18 @@
         <option value="$PROJECT_DIR$/nautilus_extension.cpp" />
         <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.hpp" />
         <option value="$PROJECT_DIR$/URLTools.hpp" />
         <option value="$PROJECT_DIR$/URLTools.cpp" />
         <option value="$PROJECT_DIR$/MenuItem.hpp" />
-        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.cpp" />
-        <option value="$PROJECT_DIR$/extension_info.hpp" />
-        <option value="$PROJECT_DIR$/GUIProvider.cpp" />
         <option value="$PROJECT_DIR$/NautilusExtension.cpp" />
-        <option value="$PROJECT_DIR$/GUIProvider.hpp" />
         <option value="$PROJECT_DIR$/FileInfo.hpp" />
+        <option value="$PROJECT_DIR$/extension_info.hpp" />
+        <option value="$PROJECT_DIR$/GUIProvider.hpp" />
+        <option value="$PROJECT_DIR$/GUIProvider.cpp" />
         <option value="$PROJECT_DIR$/CloudMailRuExtension.hpp" />
         <option value="$PROJECT_DIR$/CloudMailRuExtension.cpp" />
+        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.hpp" />
+        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.cpp" />
       </list>
     </option>
   </component>
@@ -293,7 +310,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441310209016</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="default config added">
+      <created>1441363738045</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1441363738045</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -360,7 +383,8 @@
     <MESSAGE value="Fixed urlencode so that files and filders with russian names are no longer a problem" />
     <MESSAGE value="Translated to Russian" />
     <MESSAGE value="Improved config file with more options" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved config file with more options" />
+    <MESSAGE value="default config added" />
+    <option name="LAST_COMMIT_MESSAGE" value="default config added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -369,14 +393,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="100" column="0" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -390,7 +406,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#794#1041#0" expanded="true" />
+            <element signature="e#816#1063#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -691,30 +707,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/extension_info.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30237582">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/include/c++/4.9/functional">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33261338">
@@ -731,24 +723,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GUIProvider.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding>
-            <element signature="e#794#1041#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GUIProvider.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/FileInfo.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -757,18 +731,68 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/nautilus_mailru_cloud_gtk_gui_services.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.09071274">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/extension_info.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GUIProvider.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <folding>
+            <element signature="e#816#1063#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GUIProvider.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="45" column="7" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="98" column="12" selection-start-line="98" selection-start-column="12" selection-end-line="98" selection-end-column="12" />
+          <caret line="99" column="19" selection-start-line="99" selection-start-column="19" selection-end-line="99" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45572355">
+        <state vertical-scroll-proportion="0.0">
           <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="14" selection-start-line="46" selection-start-column="14" selection-end-line="46" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3347732">
+          <caret line="158" column="0" selection-start-line="158" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
           <folding />
         </state>
       </provider>

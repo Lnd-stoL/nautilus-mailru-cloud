@@ -2,6 +2,7 @@
 #include "GUIProvider.hpp"
 
 #include <libnotify/notify.h>
+#include <sys/wait.h>
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -62,4 +63,22 @@ gboolean GUIProviderGtk::_guiThreadInvoker(gpointer dataPtr)
     delete callback;
 
     return false;
+}
+
+
+void GUIProviderGtk::showModalAuthDialog()
+{
+    _invokeExternalPythonGUI("auth_dialog");
+}
+
+
+void GUIProviderGtk::_invokeExternalPythonGUI(const string &componentName)
+{
+    pid_t childPID = 0;
+    if ((childPID = ::fork()) == 0) {
+        ::execlp("python", "python", _externalPythonGUIFile.c_str(), componentName.c_str(), nullptr);
+    }
+
+    int result = 0;
+    ::waitpid(childPID, &result, 0);
 }

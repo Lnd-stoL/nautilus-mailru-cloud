@@ -4,6 +4,7 @@ CXX := clang++
 OUT_DIR  := bin
 INT_DIR  := ./obj
 EXT_NAME := mailru-cloud-extension
+PYTHON_GUI_FILE_NAME := nautilus_mailru_cloud_gtk_gui_services.py
 
 CPP_FILES := $(wildcard ./*.cpp)
 OBJ_FILES := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
@@ -24,6 +25,7 @@ COMPILE_FLAGS := $(LOCAL_INCLUDES) $(shell pkg-config --cflags libnotify) $(shel
 extension: extension_so
 	echo "copying to nautilus extensions dir"
 	sudo cp $(OUT_DIR)/$(EXT_NAME).so /usr/lib/nautilus/extensions-3.0/$(EXT_NAME).so
+	sudo cp ./$(PYTHON_GUI_FILE_NAME) /usr/lib/nautilus/extensions-3.0/$(PYTHON_GUI_FILE_NAME)
 
 
 extension_so: $(OBJ_FILES)
@@ -59,7 +61,8 @@ deb_package: extension_so_release
 extension_release: extension_so_release
 	echo "copying to nautilus extensions dir"
 	sudo cp $(OUT_DIR)/$(EXT_NAME).so /usr/lib/nautilus/extensions-3.0/$(EXT_NAME).so
-
+	sudo cp ./$(PYTHON_GUI_FILE_NAME) /usr/lib/nautilus/extensions-3.0/$(PYTHON_GUI_FILE_NAME)
+	
 
 extension_so_release: $(OBJ_FILES_REL)
 	echo "linking release version of " $(OUT_DIR)/$(EXT_NAME).so 

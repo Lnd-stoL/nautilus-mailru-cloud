@@ -22,10 +22,6 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
     _readConfiguration();
 
     std::thread([this]() {
-        std::cout << extension_info::logPrefix << "logging into mail.ru ...    " << std::endl;
-        _cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"));
-        std::cout << extension_info::logPrefix << "logged in" << std::endl;
-
         while (_running) {
             std::unique_lock<std::mutex> lock(_tasksAccessLocker);
 
@@ -40,6 +36,7 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
 
                 auto nextTaskIt = _asyncTasksQueue.begin();
                 lock.unlock();
+                _ensureAuthentificated();    // TODO: really not every net task require mailru API
                 nextTaskIt->task();
                 lock.lock();
 
@@ -231,6 +228,8 @@ bool CloudMailRuExtension::_readConfiguration()
     if (!b_fs::exists(_configFileName())) {
         _writeDefaultConfig();
         _saveConfiguration();
+
+        return true;
     }
 
     try {
@@ -310,10 +309,25 @@ bool CloudMailRuExtension::_isOneOfCloudHiddenSystemFiles(const string &cloudFil
 void CloudMailRuExtension::_writeDefaultConfig()
 {
     _config.add("User.password", "unknown");
+    _config.add("User.logged_in", "true");
 
     _config.add("Emblems.sync_completed", "stock_calc-accept");
     _config.add("Emblems.sync_in_progress", "stock_refresh");
     _config.add("Emblems.sync_shared", "applications-roleplayingt");
 
     _config.add("SyncTweaks.in_progress_update_interval", 8000);
+}
+
+
+void CloudMailRuExtension::_ensureAuthentificated()
+{
+    if (_config.get<bool>("User.logged_in"))
+        return;
+
+    _gui->showModalAuthDialog();
+
+    std::cout << extension_info::logPrefix << "logging into mail.ru ...    " << std::endl;
+    _cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"));
+    std::cout << extension_info::logPrefix << "logged in" << std::endl;
+
 }

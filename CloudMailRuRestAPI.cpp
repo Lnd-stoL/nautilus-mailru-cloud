@@ -15,8 +15,18 @@ using b_network::body;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+void CloudMailRuRestAPI::_testLoggedIn()
+{
+    if (!_loggedIn) {
+        throw 5;
+    }
+}
+
+
 string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
 {
+    _testLoggedIn();
+
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/publish", true);
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
@@ -37,7 +47,7 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
 }
 
 
-void CloudMailRuRestAPI::login(const string &login, const string &password)
+bool CloudMailRuRestAPI::login(const string &login, const string &password)
 {
     b_http::client::request authRequest = _requestWithDefaultHdrs("http://auth.mail.ru/cgi-bin/auth");
     authRequest << header("Content-Type","application/x-www-form-urlencoded");
@@ -61,11 +71,14 @@ void CloudMailRuRestAPI::login(const string &login, const string &password)
     if (tokenPos == string::npos) {
         // TODO: error handling
         std::cout << "fuck!!!";
+        return false;
     }
 
     auto tokenValBegin = tokenPos + (int) strlen(tokenSearchPattern);
     auto tokenValEnd = cloudHomeResponse.body().find('"', tokenValBegin);
     _apiToken = cloudHomeResponse.body().substr(tokenValBegin, tokenValEnd - tokenValBegin);
+
+    return true;
 }
 
 
@@ -105,6 +118,8 @@ void CloudMailRuRestAPI::_storeCookies(const b_http::client::response &response)
 
 void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items)
 {
+    _testLoggedIn();
+
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/folder", true);
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
@@ -145,6 +160,8 @@ void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
 
 void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
 {
+    _testLoggedIn();
+
     b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/unpublish", true);
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 

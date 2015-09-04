@@ -97,6 +97,7 @@ private:
     string _configFileName();
     bool _readConfiguration();
     void _writeDefaultConfig();
+    void _ensureAuthentificated();
     void _saveConfiguration();
     bool _isOneOfCloudHiddenSystemFiles(const string& cloudFilePath);
     static b_fs::path _userHomeDirPath();
