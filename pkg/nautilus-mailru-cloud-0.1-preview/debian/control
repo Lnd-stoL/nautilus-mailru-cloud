@@ -1,0 +1,15 @@
+Source: nautilus-mailru-cloud
+Section: unknown
+Priority: optional
+Maintainer: Leonid <leonid@unknown>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/nautilus-mailru-cloud.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/nautilus-mailru-cloud.git;a=summary
+
+Package: nautilus-mailru-cloud
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

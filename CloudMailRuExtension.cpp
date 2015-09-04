@@ -63,18 +63,20 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
         return;    // system hidden files are never synced
 
     // get public link menu item
-    static const string publicLinkText = "Копировать общедоступную ссылку на '";
+    static const string publicLinkText = "Копировать ссылку на '";
     items.emplace_back(publicLinkText + fileName + '\'', "GetPublicLink");
 
     auto getLinkTask =  [this, file, fileCloudPath, fileName]() {
         string link = _cloudAPI.getPublicLinkTo(fileCloudPath);
         std::cout << extension_info::logPrefix << "got publink link to " << fileCloudPath << " : " << link << std::endl;
 
-        _gui->copyToClipboard(link);
-        _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
+        _gui->invokeInGUIThread([this, file, fileName, link]() {
+            _gui->copyToClipboard(link);
+            _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
 
-        file->invalidateExtensionInfo();
-        delete file;
+            file->invalidateExtensionInfo();
+            delete file;
+        });
     };
 
     items.back().onClick(
@@ -88,11 +90,13 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
         items.emplace_back("Прекратить общий доступ", "RemovePublicLink");
 
         auto removeLinkTask =  [this, file, fileCloudPath, fileName]() {
-            _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
-            _gui->showCopyPublicLinkNotification(string("Publink link to '") + fileName + "' removed.");
+            _gui->invokeInGUIThread([this, file, fileName, fileCloudPath]() {
+                _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
+                _gui->showCopyPublicLinkNotification(string("Publink link to '") + fileName + "' removed.");
 
-            file->invalidateExtensionInfo();
-            delete file;
+                file->invalidateExtensionInfo();
+                delete file;
+            });
         };
 
         items.back().onClick(

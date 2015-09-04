@@ -1,0 +1,2 @@
+shlibs:Depends=libatk1.0-0 (>= 1.12.4), libboost-filesystem1.54.0, libboost-system1.54.0, libboost-thread1.54.0, libc6 (>= 2.14), libcairo-gobject2 (>= 1.10.0), libcairo2 (>= 1.2.4), libgcc1 (>= 1:4.1.1), libgdk-pixbuf2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.28.0), libgtk-3-0 (>= 3.0.0), libnautilus-extension1a (>= 1:2.91), libnotify4 (>= 0.7.0), libpango-1.0-0 (>= 1.14.0), libpangocairo-1.0-0 (>= 1.14.0), libssl1.0.0 (>= 1.0.1), libstdc++6 (>= 5)
+misc:Depends=

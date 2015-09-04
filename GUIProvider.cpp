@@ -1,18 +1,23 @@
 
 #include "GUIProvider.hpp"
 
-#include <gtk/gtk.h>
 #include <libnotify/notify.h>
 
 //----------------------------------------------------------------------------------------------------------------------
 
 void GUIProviderGtk::showCopyPublicLinkNotification(const string &msgText)
 {
-    NotifyNotification *notification = notify_notification_new("Nautilus Cloud@Mail.Ru",
-                                                               msgText.c_str(),
-                                                               "/usr/share/icons/hicolor/256x256/apps/mail.ru-cloud.png");
-    notify_notification_show(notification, nullptr);
-    g_object_unref(G_OBJECT(notification));
+   // auto routine = []() -> gboolean {
+        NotifyNotification *notification = notify_notification_new("Nautilus Cloud@Mail.Ru",
+                                                                   msgText.c_str(),
+                                                                   "/usr/share/icons/hicolor/256x256/apps/mail.ru-cloud.png");
+        notify_notification_show(notification, nullptr);
+        g_object_unref(G_OBJECT(notification));
+
+    //    return true;
+    //};
+
+    //g_main_context_invoke(nullptr, routine);
 
     /*
     if (::fork() == 0) {
@@ -38,4 +43,23 @@ GUIProviderGtk::GUIProviderGtk()
 GUIProviderGtk::~GUIProviderGtk()
 {
     notify_uninit();
+}
+
+
+void GUIProviderGtk::invokeInGUIThread(function<void()> routine)
+{
+    auto callback = new function<void()>();
+    *callback = routine;
+
+    g_main_context_invoke(nullptr, &GUIProviderGtk::_guiThreadInvoker, (gpointer)callback);
+}
+
+
+gboolean GUIProviderGtk::_guiThreadInvoker(gpointer dataPtr)
+{
+    auto callback = (function<void()> *)dataPtr;
+    (*callback)();
+    delete callback;
+
+    return false;
 }

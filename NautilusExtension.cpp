@@ -263,7 +263,7 @@ GList* nautilus_extension::getFilesMenuItems(NautilusMenuProvider *provider, Gtk
     extension->getContextMenuItemsForFile(fileInfo, items);
     if (items.empty())  return nullptr;   // no menu items to add
 
-    NautilusMenuItem *mailruSubmenuItem = nautilus_menu_item_new("CloudMailRuExtension::MailRuSubmenu", "Cloud@Mail.Ru",
+    NautilusMenuItem *mailruSubmenuItem = nautilus_menu_item_new("CloudMailRuExtension::MailRuSubmenu", "Облако Mail.Ru",
                                                     "Cloud@Mail.Ru related actions",
                                                     nullptr);
     NautilusMenu *mailruSubmenu = nautilus_menu_new();

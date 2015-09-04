@@ -33,6 +33,8 @@ public:
     virtual bool isStillActual() = 0;
     virtual void invalidateExtensionInfo() = 0;
 
+    virtual ~FileInfo() { }
+
 
 public:
     inline b_fs::path pathInfo() const {

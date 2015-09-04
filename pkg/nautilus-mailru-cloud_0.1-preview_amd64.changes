@@ -1,0 +1,22 @@
+Format: 1.8
+Date: Fri, 04 Sep 2015 12:54:03 +0300
+Source: nautilus-mailru-cloud
+Binary: nautilus-mailru-cloud
+Architecture: amd64
+Version: 0.1-preview
+Distribution: unstable
+Urgency: low
+Maintainer: Leonid <leonid@unknown>
+Changed-By: Leonid <leonid@unknown>
+Description: 
+ nautilus-mailru-cloud - <insert up to 60 chars description>
+Changes: 
+ nautilus-mailru-cloud (0.1-preview) unstable; urgency=low
+ .
+   * Initial Release.
+Checksums-Sha1: 
+ 7db3b5d3ddc80f657fc67d2e4e6a5874b60c7c38 583470 nautilus-mailru-cloud_0.1-preview_amd64.deb
+Checksums-Sha256: 
+ e4c80b8cb1aefedabc29ece46d1426ef51c630bc0b3222afe42fc98fc99e7e8b 583470 nautilus-mailru-cloud_0.1-preview_amd64.deb
+Files: 
+ c7cfc380663df9a20b1fcdeaa64095e4 583470 unknown optional nautilus-mailru-cloud_0.1-preview_amd64.deb
