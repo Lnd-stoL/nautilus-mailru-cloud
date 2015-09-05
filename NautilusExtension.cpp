@@ -21,7 +21,7 @@ namespace nautilus_extension
     static GType extensionExportedType;
 
     // access to global extension class instance
-    CloudMailRuExtension *singleExtensionInstance = nullptr;
+    static CloudMailRuExtension *singleExtensionInstance = nullptr;
 
 
     struct CloudMailRuExtension_Glue
@@ -215,16 +215,17 @@ void nautilus_extension::instanceInit(CloudMailRuExtension_Glue *extensionInstan
     try {
         extensionInstance->guiProvider = new GUIProviderGtk();
         extensionInstance->extension = new CloudMailRuExtension(extensionInstance->guiProvider);
-        nautilus_extension::singleExtensionInstance = extensionInstance->extension;
     }
     catch(CloudMailRuExtension::Error extensionErr) {
-        std::cout << "!" << std::endl;
+        std::cout << "! " << extensionErr.what() << std::endl;
         extensionInstance->extension = nullptr;
     }
     catch(std::exception err) {
-        std::cout << "!" << std::endl;
+        std::cout << "!" << err.what() << std::endl;
         extensionInstance->extension = nullptr;
     }
+
+    nautilus_extension::singleExtensionInstance = extensionInstance->extension;
 }
 
 

@@ -76,9 +76,10 @@ void GUIProviderGtk::_invokeExternalPythonGUI(const string &componentName)
 {
     pid_t childPID = 0;
     if ((childPID = ::fork()) == 0) {
-        ::execlp("python", "python", _externalPythonGUIFile.c_str(), componentName.c_str(), nullptr);
+        ::execlp("python", "python",
+                 _externalPythonGUIFile.c_str(), componentName.c_str(), nullptr);
     }
 
-    int result = 0;
-    ::waitpid(childPID, &result, 0);
+    int exitState = 0;
+    ::waitpid(childPID, &exitState, 0);
 }

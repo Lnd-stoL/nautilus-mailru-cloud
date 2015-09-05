@@ -78,6 +78,7 @@ bool CloudMailRuRestAPI::login(const string &login, const string &password)
     auto tokenValEnd = cloudHomeResponse.body().find('"', tokenValBegin);
     _apiToken = cloudHomeResponse.body().substr(tokenValBegin, tokenValEnd - tokenValBegin);
 
+    _loggedIn = true;
     return true;
 }
 
@@ -172,3 +173,22 @@ void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
     auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
     assert( apiResponse.status() == 200 );
 }
+
+
+void CloudMailRuRestAPI::saveAuthTokensTo(b_pt::ptree &config)
+{
+    _testLoggedIn();
+
+    for (auto cookie : _cookies) {
+        config.put(string("c") + cookie.first, cookie.second);
+    }
+
+    config.put("token", _apiToken);
+}
+
+
+void CloudMailRuRestAPI::useAuthTokensFrom(const b_pt::ptree &config)
+{
+    _apiToken = config.get<string>("token", "_apiToken");
+}
+

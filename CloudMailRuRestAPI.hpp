@@ -8,6 +8,9 @@
 #include <boost/network/protocol/http.hpp>
 namespace b_http = boost::network::http;
 
+#include <boost/property_tree/ptree.hpp>
+namespace b_pt = boost::property_tree;
+
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -47,6 +50,8 @@ private:
     void _testLoggedIn();
 
 public:
+    void useAuthTokensFrom(const b_pt::ptree &config);
+    void saveAuthTokensTo(b_pt::ptree &config);
     bool login(const string &login, const string &password);
 
     string getPublicLinkTo(const string &cloudItemPath);

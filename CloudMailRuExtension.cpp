@@ -22,6 +22,8 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
     _readConfiguration();
 
     std::thread([this]() {
+        _ensureAuthentificated();    // TODO: really not every net task require mailru API
+
         while (_running) {
             std::unique_lock<std::mutex> lock(_tasksAccessLocker);
 
@@ -36,7 +38,6 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
 
                 auto nextTaskIt = _asyncTasksQueue.begin();
                 lock.unlock();
-                _ensureAuthentificated();    // TODO: really not every net task require mailru API
                 nextTaskIt->task();
                 lock.lock();
 
@@ -89,7 +90,7 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
         auto removeLinkTask =  [this, file, fileCloudPath, fileName]() {
             _gui->invokeInGUIThread([this, file, fileName, fileCloudPath]() {
                 _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
-                _gui->showCopyPublicLinkNotification(string("Publink link to '") + fileName + "' removed.");
+                _gui->showCopyPublicLinkNotification(string("Ссылка общего доступа на '") + fileName + "' удалена.");
 
                 file->invalidateExtensionInfo();
                 delete file;
@@ -321,13 +322,26 @@ void CloudMailRuExtension::_writeDefaultConfig()
 
 void CloudMailRuExtension::_ensureAuthentificated()
 {
-    if (_config.get<bool>("User.logged_in"))
-        return;
+    if (_cloudAPI.loggedIn())
+        return;    // everything is allright
 
-    _gui->showModalAuthDialog();
+    if (_config.get<bool>("User.logged_in")) {
+        //turn;
+    }
 
-    std::cout << extension_info::logPrefix << "logging into mail.ru ...    " << std::endl;
-    _cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"));
-    std::cout << extension_info::logPrefix << "logged in" << std::endl;
+    do {
+        std::cout << extension_info::logPrefix << "logging into mail.ru ...    " << std::endl;
+        if (_cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"))) {
+            //_config.put("User.logged_in", "true");
+            //_saveConfiguration();
+            break;
+        }
 
+        _gui->showModalAuthDialog();
+        _readConfiguration();
+
+        if (_config.get<string>("User.password") == "None")    // this means the user refused password entry
+            break;
+
+    } while (!_cloudAPI.loggedIn());
 }
