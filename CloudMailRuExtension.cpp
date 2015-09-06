@@ -22,7 +22,7 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
     _readConfiguration();
 
     std::thread([this]() {
-        _ensureAuthentificated();    // TODO: really not every net task require mailru API
+        _ensureCloudAPIIsReady();    // TODO: really not every net task require mailru API
 
         while (_running) {
             std::unique_lock<std::mutex> lock(_tasksAccessLocker);
@@ -320,28 +320,42 @@ void CloudMailRuExtension::_writeDefaultConfig()
 }
 
 
-void CloudMailRuExtension::_ensureAuthentificated()
+void CloudMailRuExtension::_ensureCloudAPIIsReady()
 {
     if (_cloudAPI.loggedIn())
         return;    // everything is allright
 
     if (_config.get<bool>("User.logged_in")) {
-        //turn;
+        if (_cloudAPI.loginWithCookies(_config.get_child("ApiSession"))) {
+            std::cout << extension_info::logPrefix << "logged in successfully using stored cookies" << std::endl;
+            return;
+        } else {
+            std::cout << extension_info::logPrefix << "warning: login attempt using stored cookies failed" << std::endl;
+        }
     }
 
     do {
-        std::cout << extension_info::logPrefix << "logging into mail.ru ...    " << std::endl;
-        if (_cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"))) {
-            //_config.put("User.logged_in", "true");
-            //_saveConfiguration();
-            break;
+        if (_config.get<string>("User.password") != "None") {
+            std::cout << extension_info::logPrefix << "logging into mail.ru cloud rest api ...    " << std::endl;
+            if (_cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"))) {
+
+                std::cout << extension_info::logPrefix << "logged in successfully" << std::endl;
+                _config.put_child("ApiSession", b_pt::ptree());
+                _cloudAPI.storeCookies(_config.get_child("ApiSession"));
+                _config.put("User.logged_in", "true");
+                _config.put("User.password", "None");
+                _saveConfiguration();
+                break;
+            }
         }
 
         _gui->showModalAuthDialog();
         _readConfiguration();
 
-        if (_config.get<string>("User.password") == "None")    // this means the user refused password entry
+        if (_config.get<string>("User.password") == "None") {    // this means the user refused password entry
+            _running = false;
             break;
+        }
 
     } while (!_cloudAPI.loggedIn());
 }

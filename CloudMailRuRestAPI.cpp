@@ -63,31 +63,14 @@ bool CloudMailRuRestAPI::login(const string &login, const string &password)
     }
     _storeCookies(authResponse);
 
-    b_http::client::request cloudHomeRequest = _requestWithDefaultHdrs("https://cloud.mail.ru", true);
-    auto cloudHomeResponse = _httpClient.get(cloudHomeRequest);
-
-    const char *tokenSearchPattern = "\"token\": \"";
-    auto tokenPos = cloudHomeResponse.body().find(tokenSearchPattern);
-    if (tokenPos == string::npos) {
-        // TODO: error handling
-        std::cout << "fuck!!!";
-        return false;
-    }
-
-    auto tokenValBegin = tokenPos + (int) strlen(tokenSearchPattern);
-    auto tokenValEnd = cloudHomeResponse.body().find('"', tokenValBegin);
-    _apiToken = cloudHomeResponse.body().substr(tokenValBegin, tokenValEnd - tokenValBegin);
-
-    _loggedIn = true;
-    return true;
+    _loggedIn = _requestAPIToken();
+    return _loggedIn;
 }
 
 
 b_http::client::request CloudMailRuRestAPI::_requestWithDefaultHdrs(const string &uri, bool includeCookies)
 {
     b_http::client::request req(uri);
-    req /* << header("Connection", "close") */
-        << header("User-Agent", _userAgent);
 
     if (includeCookies) {
         std::ostringstream cookieHeader;
@@ -96,9 +79,11 @@ b_http::client::request CloudMailRuRestAPI::_requestWithDefaultHdrs(const string
             cookieHeader << cookie.first << '=' << cookie.second << "; ";
         }
 
-        req << header("Cookie:", cookieHeader.str());
+        req << header("Cookie", cookieHeader.str());
+        std::cout << "ccc: " << cookieHeader.str() << std::endl;
     }
 
+    req << header("User-Agent", _userAgent);
     return req;
 }
 
@@ -175,20 +160,58 @@ void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
 }
 
 
-void CloudMailRuRestAPI::saveAuthTokensTo(b_pt::ptree &config)
+void CloudMailRuRestAPI::storeCookies(b_pt::ptree &config)
 {
     _testLoggedIn();
 
     for (auto cookie : _cookies) {
-        config.put(string("c") + cookie.first, cookie.second);
+        config.put(cookie.first, cookie.second);
+    }
+}
+
+
+bool CloudMailRuRestAPI::loginWithCookies(const b_pt::ptree &config)
+{
+    for (auto &cookieConfig : config) {
+        _cookies[cookieConfig.first] = cookieConfig.second.data();
     }
 
-    config.put("token", _apiToken);
+    if (_cookies.empty() || _cookies.find("Mpop") == _cookies.end()) {
+        return false;
+    }
+
+    for (auto c : _cookies)
+        std::cout << c.first << " = " << c.second << std::endl;
+
+    _loggedIn = _requestAPIToken();
+    return _loggedIn;
 }
 
 
-void CloudMailRuRestAPI::useAuthTokensFrom(const b_pt::ptree &config)
+bool CloudMailRuRestAPI::_requestAPIToken()
 {
-    _apiToken = config.get<string>("token", "_apiToken");
-}
+    b_http::client::request cloudHomeRequest = _requestWithDefaultHdrs("https://cloud.mail.ru", true);
+    cloudHomeRequest << header("Host", "cloud.mail.ru");
+    cloudHomeRequest << header("Accept", "*/*");
+    auto cloudHomeResponse = _httpClient.get(cloudHomeRequest);
 
+    if (cloudHomeResponse.status() != 200) {
+        std::cout << extension_info::logPrefix << "warning: API token request failed (request status is not 200 OK but is "
+            << cloudHomeResponse.status() << " instead)" << std::endl;
+        return false;
+    }
+
+    const char *tokenSearchPattern = "\"token\": \"";
+    auto tokenPos = cloudHomeResponse.body().find(tokenSearchPattern);
+    if (tokenPos == string::npos) {
+        std::cout << extension_info::logPrefix << "warning: API token request failed (no token found in response)" << std::endl;
+        //std::cout << extension_info::logPrefix << "response body was: " <<  cloudHomeResponse.body() << std::endl;
+        return false;
+    }
+
+    auto tokenValBegin = tokenPos + (int) strlen(tokenSearchPattern);
+    auto tokenValEnd = cloudHomeResponse.body().find('"', tokenValBegin);
+    _apiToken = cloudHomeResponse.body().substr(tokenValBegin, tokenValEnd - tokenValBegin);
+
+    return true;
+}

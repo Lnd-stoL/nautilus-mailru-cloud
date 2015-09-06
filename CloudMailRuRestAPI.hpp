@@ -36,7 +36,7 @@ public:
 
 
 private:
-    string _userAgent = string("nautilus-cloud-mailru-extension/(") + extension_info::versionString;
+    string _userAgent = string("nautilus-cloud-mailru-extension/") + extension_info::versionString + " ( Linux x86_64 )";
     b_http::client _httpClient;
 
     std::unordered_map<string, string> _cookies;
@@ -48,10 +48,11 @@ private:
     b_http::client::request _requestWithDefaultHdrs(const string &uri, bool includeCookies = false);
     void _storeCookies(const b_http::client::response &response);
     void _testLoggedIn();
+    bool _requestAPIToken();
 
 public:
-    void useAuthTokensFrom(const b_pt::ptree &config);
-    void saveAuthTokensTo(b_pt::ptree &config);
+    bool loginWithCookies(const b_pt::ptree &config);
+    void storeCookies(b_pt::ptree &config);
     bool login(const string &login, const string &password);
 
     string getPublicLinkTo(const string &cloudItemPath);
