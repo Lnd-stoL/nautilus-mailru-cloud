@@ -31,11 +31,11 @@ class PasswordEntryDialog(Gtk.Dialog):
             default_value = ''
 
         dlg_buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        super(PasswordEntryDialog, self).__init__(title='Cloud@Mail.Ru Password', flags=0, buttons=dlg_buttons, *args, **kwargs)
+        super(PasswordEntryDialog, self).__init__(title='Авторизация в Облаке Mail.Ru', flags=0, buttons=dlg_buttons, *args, **kwargs)
         self.set_default_size(200, 150)
 
         label = Gtk.Label()
-        label.set_markup("<b>Enter your cloud@mail.ru password: </b>")
+        label.set_markup("<b>Введите пароль: </b>")
         self.vbox.pack_start(label, True, True, 5)
 
         entry = Gtk.Entry()
@@ -75,20 +75,8 @@ class ErrorDialog(Gtk.MessageDialog):
 
 for arg in sys.argv:
     if arg == "auth_dialog":
-        
         dlg = PasswordEntryDialog()
         password_str = dlg.run()
         dlg.destroy()
-        
-        try:
-            config = ConfigParser.ConfigParser()
-            config.read(os_path.expanduser("~") + CONFIG_PATH)
-            config.set('User', 'password', password_str)
-
-            with open(os_path.expanduser("~") + CONFIG_PATH, 'wb') as config_file:
-                config.write(config_file)
-
-        except (IOError, ConfigParser.Error) as err:
-            print(err.message)
-            continue
+        print(password_str)
 

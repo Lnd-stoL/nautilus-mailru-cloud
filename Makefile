@@ -17,7 +17,9 @@ LINK_FLAGS := $(shell pkg-config libnautilus-extension --libs)  \
               -lssl -lcrypto
 
 LOCAL_INCLUDES := -I./dep/cpp-netlib-0.9.4/include
-COMPILE_FLAGS := $(LOCAL_INCLUDES) $(shell pkg-config --cflags libnotify) $(shell pkg-config libnautilus-extension --cflags)
+COMPILE_FLAGS := $(LOCAL_INCLUDES) $(shell pkg-config --cflags libnotify) \
+                 $(shell pkg-config libnautilus-extension --cflags) \
+                 $(shell pkg-config  gtk+-3.0 --cflags)
 
 #==================================================================================================
 # debug build

@@ -1,8 +1,10 @@
 
 #include "GUIProvider.hpp"
+#include "AuthDialogGtk.hpp"
 
 #include <libnotify/notify.h>
 #include <sys/wait.h>
+#include <iostream>
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -19,13 +21,6 @@ void GUIProviderGtk::showCopyPublicLinkNotification(const string &msgText)
     //};
 
     //g_main_context_invoke(nullptr, routine);
-
-    /*
-    if (::fork() == 0) {
-        ::execlp("notify-send", "notify-send", "-i", "/usr/share/icons/hicolor/256x256/apps/mail.ru-cloud.png",
-                 "Nautilus Cloud@Mail.Ru", (string("\"") + msgText + "\"").c_str(), nullptr);
-    }
-     */
 }
 
 
@@ -66,19 +61,40 @@ gboolean GUIProviderGtk::_guiThreadInvoker(gpointer dataPtr)
 }
 
 
-void GUIProviderGtk::showModalAuthDialog()
+string GUIProviderGtk::showModalAuthDialog()
 {
     _invokeExternalPythonGUI("auth_dialog");
+
+    string password;
+    std::cin >> password;
+
+    if (password.back() == '\n') {
+        password.erase(password.begin()-1);
+    }
+
+    return password;
+
+    //this->invokeInGUIThread([]() {
+        //AuthDialogGtk dlg;
+        //dlg.show_all();
+    //});
 }
 
 
 void GUIProviderGtk::_invokeExternalPythonGUI(const string &componentName)
 {
+    int communicationPipe[2];
+    ::pipe(communicationPipe);
+
     pid_t childPID = 0;
     if ((childPID = ::fork()) == 0) {
+        ::dup2(communicationPipe[1], ::fileno(stdout));
+
         ::execlp("python", "python",
                  _externalPythonGUIFile.c_str(), componentName.c_str(), nullptr);
     }
+
+    ::dup2(communicationPipe[0], ::fileno(stdin));
 
     int exitState = 0;
     ::waitpid(childPID, &exitState, 0);

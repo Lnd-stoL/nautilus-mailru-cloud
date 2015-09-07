@@ -335,24 +335,20 @@ void CloudMailRuExtension::_ensureCloudAPIIsReady()
     }
 
     do {
-        if (_config.get<string>("User.password") != "None") {
-            std::cout << extension_info::logPrefix << "logging into mail.ru cloud rest api ...    " << std::endl;
-            if (_cloudAPI.login(_mailRuUserName, _config.get<string>("User.password"))) {
+        string password = _gui->showModalAuthDialog();
 
-                std::cout << extension_info::logPrefix << "logged in successfully" << std::endl;
-                _config.put_child("ApiSession", b_pt::ptree());
-                _cloudAPI.storeCookies(_config.get_child("ApiSession"));
-                _config.put("User.logged_in", "true");
-                _config.put("User.password", "None");
-                _saveConfiguration();
-                break;
-            }
+        std::cout << extension_info::logPrefix << "logging into mail.ru cloud rest api ...    " << std::endl;
+        if (_cloudAPI.login(_mailRuUserName, password)) {
+
+            std::cout << extension_info::logPrefix << "logged in successfully" << std::endl;
+            _config.put_child("ApiSession", b_pt::ptree());
+            _cloudAPI.storeCookies(_config.get_child("ApiSession"));
+            _config.put("User.logged_in", "true");
+            _saveConfiguration();
+            break;
         }
 
-        _gui->showModalAuthDialog();
-        _readConfiguration();
-
-        if (_config.get<string>("User.password") == "None") {    // this means the user refused password entry
+        if (password == "None") {    // this means the user refused password entry
             _running = false;
             break;
         }

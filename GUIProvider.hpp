@@ -19,7 +19,7 @@ using std::function;
 class GUIProvider
 {
 public:
-    virtual void showModalAuthDialog() = 0;
+    virtual string showModalAuthDialog() = 0;
     virtual void showCopyPublicLinkNotification(const string &msgText) = 0;
     virtual void copyToClipboard(const string &text) = 0;
     virtual void invokeInGUIThread(function<void()> routine) = 0;
@@ -44,7 +44,7 @@ public:
     virtual ~GUIProviderGtk();
 
 public:
-    virtual void showModalAuthDialog();
+    virtual string showModalAuthDialog();
     virtual void showCopyPublicLinkNotification(const string &msgText);
     virtual void copyToClipboard(const string &text);
     virtual void invokeInGUIThread(function<void()> routine);

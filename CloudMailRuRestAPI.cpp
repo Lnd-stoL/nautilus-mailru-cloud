@@ -27,7 +27,7 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
 {
     _testLoggedIn();
 
-    b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/publish", true);
+    b_http::client::request apiRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/publish");
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::ostringstream formPostFields;
@@ -49,7 +49,7 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
 
 bool CloudMailRuRestAPI::login(const string &login, const string &password)
 {
-    b_http::client::request authRequest = _requestWithDefaultHdrs("http://auth.mail.ru/cgi-bin/auth");
+    b_http::client::request authRequest = _createRequestWithDefaultHdrs("http://auth.mail.ru/cgi-bin/auth");
     authRequest << header("Content-Type","application/x-www-form-urlencoded");
 
     std::ostringstream formPostFields;
@@ -68,11 +68,11 @@ bool CloudMailRuRestAPI::login(const string &login, const string &password)
 }
 
 
-b_http::client::request CloudMailRuRestAPI::_requestWithDefaultHdrs(const string &uri, bool includeCookies)
+b_http::client::request CloudMailRuRestAPI::_createRequestWithDefaultHdrs(const string &uri)
 {
     b_http::client::request req(uri);
 
-    if (includeCookies) {
+    if (!_cookies.empty()) {
         std::ostringstream cookieHeader;
 
         for (const auto& cookie: _cookies) {
@@ -106,7 +106,7 @@ void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
 {
     _testLoggedIn();
 
-    b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/folder", true);
+    b_http::client::request apiRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru/api/v2/folder");
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::ostringstream formPostFields;
@@ -148,7 +148,7 @@ void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
 {
     _testLoggedIn();
 
-    b_http::client::request apiRequest = _requestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/unpublish", true);
+    b_http::client::request apiRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/unpublish");
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
     std::ostringstream formPostFields;
@@ -190,7 +190,7 @@ bool CloudMailRuRestAPI::loginWithCookies(const b_pt::ptree &config)
 
 bool CloudMailRuRestAPI::_requestAPIToken()
 {
-    b_http::client::request cloudHomeRequest = _requestWithDefaultHdrs("https://cloud.mail.ru", true);
+    b_http::client::request cloudHomeRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru");
     cloudHomeRequest << header("Host", "cloud.mail.ru");
     cloudHomeRequest << header("Accept", "*/*");
     auto cloudHomeResponse = _httpClient.get(cloudHomeRequest);

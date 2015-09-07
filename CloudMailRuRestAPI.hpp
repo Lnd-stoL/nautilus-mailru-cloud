@@ -45,7 +45,7 @@ private:
 
 
 private:
-    b_http::client::request _requestWithDefaultHdrs(const string &uri, bool includeCookies = false);
+    b_http::client::request _createRequestWithDefaultHdrs(const string &uri);
     void _storeCookies(const b_http::client::response &response);
     void _testLoggedIn();
     bool _requestAPIToken();
