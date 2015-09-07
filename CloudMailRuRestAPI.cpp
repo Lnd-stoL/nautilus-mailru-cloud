@@ -15,17 +15,20 @@ using b_network::body;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void CloudMailRuRestAPI::_testLoggedIn()
+bool CloudMailRuRestAPI::_testLoggedIn()
 {
     if (!_loggedIn) {
-        throw 5;
+        std::cout << extension_info::logPrefix << "warning: cloud rest API method call without logged in user - skipping"
+            << std::endl;
     }
+
+    return _loggedIn;
 }
 
 
 string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
 {
-    _testLoggedIn();
+    if (!_testLoggedIn())  return "";
 
     b_http::client::request apiRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/publish");
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -34,14 +37,27 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
     formPostFields << "home="   << URLTools::encode(cloudItemPath)
                    << "&token=" << URLTools::encode(_apiToken);
 
-    std::cout << formPostFields.str() << std::endl;
-
-    auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
     std::stringstream responseText;
-    responseText << apiResponse.body();
+    try {
+        auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
+        if (apiResponse.status() != 200) {
+            _reportHTTPStatusError(apiResponse.status(), "get public link");
+            return "";
+        }
+        responseText << apiResponse.body();
+    } catch (boost::exception &error) {
+        _reportBoostException(error, "getting public link");
+        return "";
+    }
 
     b_pt::ptree responseJSON;
     b_pt::read_json(responseText, responseJSON);
+
+    if (responseJSON.find("body") == responseJSON.not_found()) {
+        std::cout << extension_info::logPrefix << "error: cloud rest API (get public link) - unsusual JSON answer: "
+            << responseText.str() << std::endl;
+        return "";
+    }
 
     return string("https://cloud.mail.ru/public/") + responseJSON.get<string>("body");
 }
@@ -57,11 +73,20 @@ bool CloudMailRuRestAPI::login(const string &login, const string &password)
                    << "&Login="    << URLTools::encode(login)
                    << "&Password=" << URLTools::encode(password);
 
-    auto authResponse = _httpClient.post(authRequest, formPostFields.str());
-    if (authResponse.status() != 302 /*Redirection*/) {
-        // TODO: error handling
+    try {
+        auto authResponse = _httpClient.post(authRequest, formPostFields.str());
+        if (authResponse.status() != 302 /*Redirection*/) {
+            std::cout << extension_info::logPrefix << "warning: cloud rest API - login - auth page status code is not redirection" << std::endl;
+            return false;
+        }
+        _storeCookies(authResponse);
+    } catch (boost::exception &error) {
+        _reportBoostException(error, "logging in");
+        return false;
     }
-    _storeCookies(authResponse);
+
+    if (_cookies.find("Mpop") == _cookies.end())
+        return false;    // seems invalid password or username
 
     _loggedIn = _requestAPIToken();
     return _loggedIn;
@@ -101,9 +126,9 @@ void CloudMailRuRestAPI::_storeCookies(const b_http::client::response &response)
 }
 
 
-void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items)
+bool CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items)
 {
-    _testLoggedIn();
+    if (!_testLoggedIn())  return false;
 
     b_http::client::request apiRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru/api/v2/folder");
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -112,40 +137,56 @@ void CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
     formPostFields << "home="   << URLTools::encode(cloudFolderPath)
                    << "&token=" << URLTools::encode(_apiToken);
 
-    auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
     std::stringstream responseText;
-    responseText << apiResponse.body();
+    try {
+        auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
+        if (apiResponse.status() != 200) {
+            _reportHTTPStatusError(apiResponse.status(), "get folder contents");
+            return false;
+        }
+        responseText << apiResponse.body();
+    } catch (boost::exception &error) {
+        _reportBoostException(error, "getting folder contents");
+        return false;
+    }
 
     b_pt::ptree responseJSON;
     b_pt::read_json(responseText, responseJSON);
 
-    int itemCount = responseJSON.get<int>("body.count.files") + responseJSON.get<int>("body.count.folders");
-    items.reserve(itemCount);
+    try {
+        int itemCount = responseJSON.get<int>("body.count.files") + responseJSON.get<int>("body.count.folders");
+        items.reserve(itemCount);
 
-    auto &listJSON = responseJSON.get_child("body.list");
-    for (auto &fileJSON : listJSON) {
+        auto &listJSON = responseJSON.get_child("body.list");
+        for (auto &fileJSON : listJSON) {
 
-        CloudFileInfo fileInfo;
-        fileInfo.path  = fileJSON.second.get<string>("home");
-        fileInfo.size  = fileJSON.second.get<unsigned>("size");
-        fileInfo.directory = fileJSON.second.get<string>("kind") != "file";
+            CloudFileInfo fileInfo;
+            fileInfo.path  = fileJSON.second.get<string>("home");
+            fileInfo.size  = fileJSON.second.get<unsigned>("size");
+            fileInfo.directory = fileJSON.second.get<string>("kind") != "file";
 
-        if (!fileInfo.directory) {
-            fileInfo.mtime = fileJSON.second.get<unsigned>("mtime");
+            if (!fileInfo.directory) {
+                fileInfo.mtime = fileJSON.second.get<unsigned>("mtime");
+            }
+
+            if (fileJSON.second.find("weblink") != fileJSON.second.not_found()) {
+                fileInfo.weblink = fileJSON.second.get<string>("weblink");
+            }
+
+            items.push_back(std::move(fileInfo));
         }
-
-        if (fileJSON.second.find("weblink") != fileJSON.second.not_found()) {
-            fileInfo.weblink = fileJSON.second.get<string>("weblink");
-        }
-
-        items.push_back(std::move(fileInfo));
+    } catch (boost::exception &error) {
+        _reportBoostException(error, "getting folder contents");
+        return false;
     }
+
+    return true;
 }
 
 
-void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
+bool CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
 {
-    _testLoggedIn();
+    if (!_testLoggedIn())  return false;
 
     b_http::client::request apiRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru/api/v2/file/unpublish");
     apiRequest << header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -154,8 +195,18 @@ void CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
     formPostFields << "weblink=" << itemWeblink
                    << "&token="  << URLTools::encode(_apiToken);
 
-    auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
-    assert( apiResponse.status() == 200 );
+    try {
+        auto apiResponse = _httpClient.post(apiRequest, formPostFields.str());
+        if (apiResponse.status() != 200) {
+            _reportHTTPStatusError(apiResponse.status(), "remove public link");
+            return false;
+        }
+    } catch (boost::exception &error) {
+        _reportBoostException(error, "removing public link");
+        return false;
+    }
+
+    return true;
 }
 
 
@@ -179,9 +230,6 @@ bool CloudMailRuRestAPI::loginWithCookies(const b_pt::ptree &config)
         return false;
     }
 
-    for (auto c : _cookies)
-        std::cout << c.first << " = " << c.second << std::endl;
-
     _loggedIn = _requestAPIToken();
     return _loggedIn;
 }
@@ -192,16 +240,23 @@ bool CloudMailRuRestAPI::_requestAPIToken()
     b_http::client::request cloudHomeRequest = _createRequestWithDefaultHdrs("https://cloud.mail.ru");
     cloudHomeRequest << header("Host", "cloud.mail.ru");
     cloudHomeRequest << header("Accept", "*/*");
-    auto cloudHomeResponse = _httpClient.get(cloudHomeRequest);
 
-    if (cloudHomeResponse.status() != 200) {
-        std::cout << extension_info::logPrefix << "warning: API token request failed (request status is not 200 OK but is "
-            << cloudHomeResponse.status() << " instead)" << std::endl;
+    string responseBody = "";
+    try {
+        auto cloudHomeResponse = _httpClient.get(cloudHomeRequest);
+        if (cloudHomeResponse.status() != 200) {
+            std::cout << extension_info::logPrefix << "warning: API token request failed (request status is not 200 OK but is "
+                << cloudHomeResponse.status() << " instead)" << std::endl;
+            return false;
+        }
+        responseBody = cloudHomeResponse.body();
+    } catch (boost::exception &error) {
+        _reportBoostException(error, "requesting API token");
         return false;
     }
 
     const char *tokenSearchPattern = "\"token\": \"";
-    auto tokenPos = cloudHomeResponse.body().find(tokenSearchPattern);
+    auto tokenPos = responseBody.find(tokenSearchPattern);
     if (tokenPos == string::npos) {
         std::cout << extension_info::logPrefix << "warning: API token request failed (no token found in response)" << std::endl;
         //std::cout << extension_info::logPrefix << "response body was: " <<  cloudHomeResponse.body() << std::endl;
@@ -209,8 +264,29 @@ bool CloudMailRuRestAPI::_requestAPIToken()
     }
 
     auto tokenValBegin = tokenPos + (int) strlen(tokenSearchPattern);
-    auto tokenValEnd = cloudHomeResponse.body().find('"', tokenValBegin);
-    _apiToken = cloudHomeResponse.body().substr(tokenValBegin, tokenValEnd - tokenValBegin);
+    auto tokenValEnd = responseBody.find('"', tokenValBegin);
+    _apiToken = responseBody.substr(tokenValBegin, tokenValEnd - tokenValBegin);
 
     return true;
+}
+
+
+void CloudMailRuRestAPI::_reportHTTPStatusError(int responseStatus, const string &requestInfo)
+{
+    if (responseStatus == 403) {
+        std::cout << extension_info::logPrefix << "error: cloud rest API failed to " << requestInfo << "- 403 forbidden" << std::endl;
+    } else if (responseStatus == 404) {
+        std::cout << extension_info::logPrefix << "error: cloud rest API failed to " << requestInfo << "- 404 not found" << std::endl;
+    } else if (responseStatus == 507) {
+        std::cout << extension_info::logPrefix << "error: cloud rest API failed to " << requestInfo << "- 507 storage exceeded" << std::endl;
+    } else {
+        std::cout << extension_info::logPrefix << "error: cloud rest API failed to " << requestInfo << " - status " << responseStatus << std::endl;
+    }
+}
+
+
+void CloudMailRuRestAPI::_reportBoostException(boost::exception& error, const string &requestInfo)
+{
+    std::cout << extension_info::logPrefix << "error: exception thrown while "
+        << requestInfo << ": " << boost::diagnostic_information(error) << std::endl;
 }

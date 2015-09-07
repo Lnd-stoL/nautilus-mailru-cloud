@@ -47,17 +47,21 @@ private:
 private:
     b_http::client::request _createRequestWithDefaultHdrs(const string &uri);
     void _storeCookies(const b_http::client::response &response);
-    void _testLoggedIn();
+    bool _testLoggedIn();
     bool _requestAPIToken();
+    void _reportHTTPStatusError(int responseStatus, const string &requestInfo);
+    void _reportBoostException(boost::exception& error, const string &requestInfo);
+
 
 public:
     bool loginWithCookies(const b_pt::ptree &config);
     void storeCookies(b_pt::ptree &config);
     bool login(const string &login, const string &password);
 
+    // returns empty string if something go wrong
     string getPublicLinkTo(const string &cloudItemPath);
-    void removePublicLinkTo(const string &itemWeblink);
-    void getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items);
+    bool removePublicLinkTo(const string &itemWeblink);
+    bool getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items);
 
 
 public:

@@ -22,8 +22,6 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
     _readConfiguration();
 
     std::thread([this]() {
-        _ensureCloudAPIIsReady();    // TODO: really not every net task require mailru API
-
         while (_running) {
             std::unique_lock<std::mutex> lock(_tasksAccessLocker);
 
@@ -35,6 +33,8 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
 
             while (!_asyncTasksQueue.empty() &&
                     _asyncTasksQueue.begin()->startTime <= system_clock::now()) {
+
+                _ensureCloudAPIIsReady();    // TODO: really not every net task require mailru API
 
                 auto nextTaskIt = _asyncTasksQueue.begin();
                 lock.unlock();
@@ -69,10 +69,13 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
         std::cout << extension_info::logPrefix << "got publink link to " << fileCloudPath << " : " << link << std::endl;
 
         _gui->invokeInGUIThread([this, file, fileName, link]() {
-            _gui->copyToClipboard(link);
-            _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
-
-            file->invalidateExtensionInfo();
+            if (link != "") {
+                _gui->copyToClipboard(link);
+                _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
+                file->invalidateExtensionInfo();
+            } else {
+                _gui->showCopyPublicLinkNotification(string("Не удалось скопировать ссылку на '") + fileName + "'.");
+            }
             delete file;
         });
     };
@@ -88,11 +91,15 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
         items.emplace_back("Прекратить общий доступ", "RemovePublicLink");
 
         auto removeLinkTask =  [this, file, fileCloudPath, fileName]() {
-            _gui->invokeInGUIThread([this, file, fileName, fileCloudPath]() {
-                _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
-                _gui->showCopyPublicLinkNotification(string("Ссылка общего доступа на '") + fileName + "' удалена.");
+            bool success = _cloudAPI.removePublicLinkTo(_cachedCloudFiles[fileCloudPath].weblink);
 
-                file->invalidateExtensionInfo();
+            _gui->invokeInGUIThread([this, file, fileName, fileCloudPath, success]() {
+                if (success) {
+                    _gui->showCopyPublicLinkNotification(string("Ссылка общего доступа на '") + fileName + "' удалена.");
+                    file->invalidateExtensionInfo();
+                } else {
+                    _gui->showCopyPublicLinkNotification(string("Не удалось удалить ссылку общего доступа на '") + fileName + "'.");
+                }
                 delete file;
             });
         };
@@ -116,7 +123,7 @@ bool CloudMailRuExtension::_readOfficialClientConfig()
     }
     catch (const std::exception &parserErr) {
         std::cout << extension_info::logPrefix << "error while reading official cloud client config: " << parserErr.what() << std::endl;
-        throw Error(Error::CLIENT_CONFIG_ERROR, string("exception thrown: ") + parserErr.what());
+        throw ExtensionError(ExtensionError::CLIENT_CONFIG_ERROR, string("exception thrown: ") + parserErr.what());
     }
 
     return true;
@@ -169,10 +176,11 @@ string CloudMailRuExtension::_cloudPath(const FileInfo& file)
 
 void CloudMailRuExtension::_netUpdateDirectory(const string &dirName)
 {
-    std::cout << extension_info::logPrefix << "started getting direcory items for " << dirName << std::endl;
+    std::cout << extension_info::logPrefix << "started getting direcory contents for " << dirName << std::endl;
 
     vector<CloudMailRuRestAPI::CloudFileInfo> dirItems;
-    _cloudAPI.getFolderContents(dirName, dirItems);
+    if (!_cloudAPI.getFolderContents(dirName, dirItems))
+        return;
 
     for (auto &nextItem : dirItems) {
         _cachedCloudFiles[nextItem.path] = nextItem;
@@ -229,7 +237,6 @@ bool CloudMailRuExtension::_readConfiguration()
     if (!b_fs::exists(_configFileName())) {
         _writeDefaultConfig();
         _saveConfiguration();
-
         return true;
     }
 
@@ -238,7 +245,7 @@ bool CloudMailRuExtension::_readConfiguration()
     }
     catch (const std::exception &parserErr) {
         std::cout << extension_info::logPrefix << "error while parsing config file: " << parserErr.what() << std::endl;
-        throw Error(Error::CONFIG_ERROR, string("exception thrown while parsing config: ") + parserErr.what());
+        throw ExtensionError(ExtensionError::CONFIG_ERROR, string("exception thrown while parsing config: ") + parserErr.what());
     }
 
     return true;
@@ -252,7 +259,7 @@ void CloudMailRuExtension::_saveConfiguration()
     }
     catch (const std::exception &parserErr) {
         std::cout << extension_info::logPrefix << "error while saving config file: " << parserErr.what() << std::endl;
-        throw Error(Error::CONFIG_ERROR, string("exception thrown while saving config: ") + parserErr.what());
+        throw ExtensionError(ExtensionError::CONFIG_ERROR, string("exception thrown while saving config: ") + parserErr.what());
     }
 }
 
@@ -334,7 +341,7 @@ void CloudMailRuExtension::_ensureCloudAPIIsReady()
     }
 
     do {
-        string password = _gui->showModalAuthDialog();
+        string password = _gui->showModalAuthDialog(_mailRuUserName);
 
         std::cout << extension_info::logPrefix << "logging into mail.ru cloud rest api ...    " << std::endl;
         if (_cloudAPI.login(_mailRuUserName, password)) {

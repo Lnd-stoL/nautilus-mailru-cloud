@@ -1,5 +1,5 @@
 
-CXX := clang++
+CXX := clang++ -Wno-deprecated-register
 PKG_CXX := g++
 
 OUT_DIR  := bin

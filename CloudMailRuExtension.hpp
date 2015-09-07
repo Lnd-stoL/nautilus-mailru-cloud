@@ -8,6 +8,7 @@
 #include "MenuItem.hpp"
 #include "GUIProvider.hpp"
 #include "CloudMailRuRestAPI.hpp"
+#include "ExtensionError.hpp"
 
 #include <unordered_map>
 #include <exception>
@@ -33,30 +34,6 @@ namespace b_pt = boost::property_tree;
 
 class CloudMailRuExtension
 {
-public:
-    class Error : public std::exception
-    {
-    public:
-        enum code_t { CLIENT_CONFIG_ERROR, CONFIG_ERROR };
-
-    private:
-        code_t _code;
-        string _reason;
-
-    public:
-        Error(code_t code, string reason = "") : _code(code), _reason(reason)  { }
-
-        inline code_t code() const noexcept {
-            return _code;
-        }
-
-        virtual const char* what() const noexcept {
-            return _reason.c_str();
-        }
-    };
-
-//----------------------------------------------------------------------------------------------------------------------
-
 private:
     struct _AsyncTask
     {

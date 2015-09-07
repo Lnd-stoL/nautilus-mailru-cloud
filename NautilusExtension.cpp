@@ -216,7 +216,7 @@ void nautilus_extension::instanceInit(CloudMailRuExtension_Glue *extensionInstan
         extensionInstance->guiProvider = new GUIProviderGtk();
         extensionInstance->extension = new CloudMailRuExtension(extensionInstance->guiProvider);
     }
-    catch(CloudMailRuExtension::Error extensionErr) {
+    catch(ExtensionError extensionErr) {
         std::cout << "! " << extensionErr.what() << std::endl;
         extensionInstance->extension = nullptr;
     }
