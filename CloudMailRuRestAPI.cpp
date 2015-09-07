@@ -80,7 +80,6 @@ b_http::client::request CloudMailRuRestAPI::_createRequestWithDefaultHdrs(const 
         }
 
         req << header("Cookie", cookieHeader.str());
-        std::cout << "ccc: " << cookieHeader.str() << std::endl;
     }
 
     req << header("User-Agent", _userAgent);
