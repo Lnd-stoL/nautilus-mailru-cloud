@@ -66,13 +66,12 @@ string GUIProviderGtk::showModalAuthDialog(const string &forLogin)
 {
     auto externalGUI = _invokeExternalPythonGUI("auth_dialog");
 
-    string password;
-    password.reserve(1000);  // TODO: fix it if it works
-    fscanf(externalGUI.commFrom, "%s", password.c_str());
-    std::cin >> password;
+    char rpassword[512];
+    fgets(rpassword, sizeof(rpassword)/sizeof(rpassword[0]) - 1, externalGUI.commFrom);
 
+    string password = rpassword;
     if (password.back() == '\n') {
-        password.erase(password.begin()-1);
+        password.erase(password.end()-1);
     }
 
     _waitForExternalPythonGUIExit(externalGUI);

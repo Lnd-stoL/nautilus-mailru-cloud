@@ -37,7 +37,7 @@ public:
 
 private:
     string _userAgent = string("nautilus-cloud-mailru-extension/") + extension_info::versionString + " ( Linux x86_64 )";
-    b_http::client _httpClient;
+    b_http::basic_client<b_http::tags::http_async_8bit_udp_resolve, 1, 1> _httpClient;
 
     std::unordered_map<string, string> _cookies;
     string _apiToken;
@@ -47,10 +47,11 @@ private:
 private:
     b_http::client::request _createRequestWithDefaultHdrs(const string &uri);
     void _storeCookies(const b_http::client::response &response);
-    bool _testLoggedIn();
     bool _requestAPIToken();
+
+    bool _testLoggedIn();
     void _reportHTTPStatusError(int responseStatus, const string &requestInfo);
-    void _reportBoostException(boost::exception& error, const string &requestInfo);
+    void _reportException(boost::system::system_error &error, const string &requestInfo);
 
 
 public:
@@ -58,7 +59,7 @@ public:
     void storeCookies(b_pt::ptree &config);
     bool login(const string &login, const string &password);
 
-    // returns empty string if something go wrong
+    // returns empty string if something goes wrong
     string getPublicLinkTo(const string &cloudItemPath);
     bool removePublicLinkTo(const string &itemWeblink);
     bool getFolderContents(const string &cloudFolderPath, vector<CloudFileInfo> &items);

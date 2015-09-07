@@ -34,10 +34,9 @@ CloudMailRuExtension::CloudMailRuExtension(GUIProvider *guiProvider) :
             while (!_asyncTasksQueue.empty() &&
                     _asyncTasksQueue.begin()->startTime <= system_clock::now()) {
 
-                _ensureCloudAPIIsReady();    // TODO: really not every net task require mailru API
-
                 auto nextTaskIt = _asyncTasksQueue.begin();
                 lock.unlock();
+                _ensureCloudAPIIsReady();    // TODO: really not every net task require mailru API (just a quick fix for login dialog to be in focus)
                 nextTaskIt->task();
                 lock.lock();
 
@@ -290,7 +289,6 @@ void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir)
 
     if (!file->isStillActual()) {
         delete file;
-        //std::cout << fileCloudDir << " is gone " << std::endl;
         return;
     }
 
@@ -354,7 +352,7 @@ void CloudMailRuExtension::_ensureCloudAPIIsReady()
             break;
         }
 
-        if (password == "None") {    // this means the user refused password entry
+        if (password == "None" || password == "") {    // this means the user refused password entry
             _running = false;
             break;
         }

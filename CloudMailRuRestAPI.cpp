@@ -45,8 +45,8 @@ string CloudMailRuRestAPI::getPublicLinkTo(const string &cloudItemPath)
             return "";
         }
         responseText << apiResponse.body();
-    } catch (boost::exception &error) {
-        _reportBoostException(error, "getting public link");
+    } catch (boost::system::system_error &error) {
+        _reportException(error, "getting public link");
         return "";
     }
 
@@ -80,8 +80,8 @@ bool CloudMailRuRestAPI::login(const string &login, const string &password)
             return false;
         }
         _storeCookies(authResponse);
-    } catch (boost::exception &error) {
-        _reportBoostException(error, "logging in");
+    } catch (boost::system::system_error &error) {
+        _reportException(error, "logging in");
         return false;
     }
 
@@ -108,6 +108,7 @@ b_http::client::request CloudMailRuRestAPI::_createRequestWithDefaultHdrs(const 
     }
 
     req << header("User-Agent", _userAgent);
+    req << header("Connection", "Keep-Alive");
     return req;
 }
 
@@ -145,8 +146,8 @@ bool CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
             return false;
         }
         responseText << apiResponse.body();
-    } catch (boost::exception &error) {
-        _reportBoostException(error, "getting folder contents");
+    } catch (boost::system::system_error &error) {
+        _reportException(error, "getting folder contents");
         return false;
     }
 
@@ -175,8 +176,8 @@ bool CloudMailRuRestAPI::getFolderContents(const string &cloudFolderPath, vector
 
             items.push_back(std::move(fileInfo));
         }
-    } catch (boost::exception &error) {
-        _reportBoostException(error, "getting folder contents");
+    } catch (b_pt::ptree_error &error) {
+        //_reportException(error, "getting folder contents");
         return false;
     }
 
@@ -201,8 +202,8 @@ bool CloudMailRuRestAPI::removePublicLinkTo(const string &itemWeblink)
             _reportHTTPStatusError(apiResponse.status(), "remove public link");
             return false;
         }
-    } catch (boost::exception &error) {
-        _reportBoostException(error, "removing public link");
+    } catch (boost::system::system_error &error) {
+        _reportException(error, "removing public link");
         return false;
     }
 
@@ -250,8 +251,8 @@ bool CloudMailRuRestAPI::_requestAPIToken()
             return false;
         }
         responseBody = cloudHomeResponse.body();
-    } catch (boost::exception &error) {
-        _reportBoostException(error, "requesting API token");
+    } catch (boost::system::system_error &error) {
+        _reportException(error, "requesting API token");
         return false;
     }
 
@@ -285,7 +286,7 @@ void CloudMailRuRestAPI::_reportHTTPStatusError(int responseStatus, const string
 }
 
 
-void CloudMailRuRestAPI::_reportBoostException(boost::exception& error, const string &requestInfo)
+void CloudMailRuRestAPI::_reportException(boost::system::system_error &error, const string &requestInfo)
 {
     std::cout << extension_info::logPrefix << "error: exception thrown while "
         << requestInfo << ": " << boost::diagnostic_information(error) << std::endl;
