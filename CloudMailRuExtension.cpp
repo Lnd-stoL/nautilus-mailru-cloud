@@ -309,12 +309,11 @@ bool CloudMailRuExtension::_isOneOfCloudHiddenSystemFiles(const string &cloudFil
 
 void CloudMailRuExtension::_writeDefaultConfig()
 {
-    _config.add("User.password", "unknown");
-    _config.add("User.logged_in", "true");
+    _config.add("User.logged_in", "false");
 
     _config.add("Emblems.sync_completed", "stock_calc-accept");
     _config.add("Emblems.sync_in_progress", "stock_refresh");
-    _config.add("Emblems.sync_shared", "applications-roleplayingt");
+    _config.add("Emblems.sync_shared", "applications-roleplaying");
 
     _config.add("SyncTweaks.in_progress_update_interval", 8000);
 }

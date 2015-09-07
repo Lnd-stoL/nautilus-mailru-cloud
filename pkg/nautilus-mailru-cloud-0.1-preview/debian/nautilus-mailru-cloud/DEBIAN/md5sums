@@ -1,4 +1,4 @@
-4be56098d8b1e74a78ee6ae2ebf3bd45  usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so
-7e90790dd2008bcb174613058a7b0a60  usr/share/doc/nautilus-mailru-cloud/README.Debian
-db3e7d10a2ff541019e25313edb9d62e  usr/share/doc/nautilus-mailru-cloud/changelog.Debian.gz
-1c0ee0b082161c979c0024123febe182  usr/share/doc/nautilus-mailru-cloud/copyright
+513e59315414a3b3d83ea588dd908406  usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so
+0581de23defc79d1d1d7018a59a392ab  usr/lib/nautilus/extensions-3.0/nautilus_mailru_cloud_gtk_gui_services.py
+e76baea590c611c11ec3433c5ff52db6  usr/share/doc/nautilus-mailru-cloud/changelog.Debian.gz
+9183086e5765a1fefb265a4994c091c2  usr/share/doc/nautilus-mailru-cloud/copyright

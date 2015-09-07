@@ -1,1 +1,2 @@
 mailru-cloud-extension.so /usr/lib/nautilus/extensions-3.0/
+nautilus_mailru_cloud_gtk_gui_services.py /usr/lib/nautilus/extensions-3.0/

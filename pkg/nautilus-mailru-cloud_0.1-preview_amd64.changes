@@ -6,17 +6,17 @@ Architecture: amd64
 Version: 0.1-preview
 Distribution: unstable
 Urgency: low
-Maintainer: Leonid <leonid@unknown>
-Changed-By: Leonid <leonid@unknown>
+Maintainer: Leonid Stolyarov <lndstol@gmail.com>
+Changed-By: Leonid Stlyarov <lndstol@gmail.com>
 Description: 
- nautilus-mailru-cloud - <insert up to 60 chars description>
+ nautilus-mailru-cloud - Интеграция с Облаком Mail.Ru
 Changes: 
  nautilus-mailru-cloud (0.1-preview) unstable; urgency=low
  .
-   * Initial Release.
+   * Initial Release (early preview, mainly for testing).
 Checksums-Sha1: 
- 7db3b5d3ddc80f657fc67d2e4e6a5874b60c7c38 583470 nautilus-mailru-cloud_0.1-preview_amd64.deb
+ 0b58dab5ca70990805524db8adf1f0b0b5e1d261 573008 nautilus-mailru-cloud_0.1-preview_amd64.deb
 Checksums-Sha256: 
- e4c80b8cb1aefedabc29ece46d1426ef51c630bc0b3222afe42fc98fc99e7e8b 583470 nautilus-mailru-cloud_0.1-preview_amd64.deb
+ ea3e76ac72aefadce005f8deca9f85a8e65c9f42b9eb382768cfd3a955304d48 573008 nautilus-mailru-cloud_0.1-preview_amd64.deb
 Files: 
- c7cfc380663df9a20b1fcdeaa64095e4 583470 unknown optional nautilus-mailru-cloud_0.1-preview_amd64.deb
+ 6f06664714fbc4d11dc4646b42ff51ea 573008 unknown optional nautilus-mailru-cloud_0.1-preview_amd64.deb

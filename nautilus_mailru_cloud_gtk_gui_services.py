@@ -106,4 +106,8 @@ for arg in sys.argv:
         password_str = dlg.run()
         dlg.destroy()
         print(password_str)
+        break
+        
+    if arg == "error_dialog":
+        break
 

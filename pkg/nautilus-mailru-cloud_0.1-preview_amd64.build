@@ -2,7 +2,7 @@
 dpkg-buildpackage: пакет исходных текстов nautilus-mailru-cloud
 dpkg-buildpackage: версия исходных текстов 0.1-preview
 dpkg-buildpackage: source distribution unstable
-dpkg-buildpackage: исходные тексты изменены Leonid <leonid@unknown>
+dpkg-buildpackage: исходные тексты изменены Leonid Stlyarov <lndstol@gmail.com>
  dpkg-source --before-build nautilus-mailru-cloud-0.1-preview
 dpkg-buildpackage: архитектура узла amd64
  fakeroot debian/rules clean
@@ -31,14 +31,6 @@ dh binary
    dh_strip
    dh_makeshlibs
    dh_shlibdeps
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libgio-2.0.so.0, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libgdk-3.so.0, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libgdk_pixbuf-2.0.so.0, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libatk-1.0.so.0, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libcairo.so.2, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libcairo-gobject.so.2, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libpangocairo-1.0.so.0, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
-dpkg-shlibdeps: предупреждение: у пакета debian/nautilus-mailru-cloud/usr/lib/nautilus/extensions-3.0/mailru-cloud-extension.so можно удалить бесполезную зависимость от libpango-1.0.so.0, если исключить её из компоновки (так как не используется ни одного из её библиотечных символов)
    dh_installdeb
    dh_gencontrol
    dh_md5sums
@@ -50,21 +42,14 @@ dpkg-genchanges: закачка только двоичных пакетов, б
 dpkg-buildpackage: закачка только двоичных пакетов (без пакетов исходного кода)
 Now running lintian...
 E: nautilus-mailru-cloud changes: bad-distribution-in-changes-file unstable
-E: nautilus-mailru-cloud changes: changed-by-address-malformed Leonid <leonid@unknown>
-E: nautilus-mailru-cloud: debian-changelog-file-contains-invalid-email-address leonid@unknown
-E: nautilus-mailru-cloud: helper-templates-in-copyright
 W: nautilus-mailru-cloud: copyright-has-url-from-dh_make-boilerplate
 E: nautilus-mailru-cloud: copyright-contains-dh_make-todo-boilerplate
 E: nautilus-mailru-cloud: possible-gpl-code-linked-with-openssl
-W: nautilus-mailru-cloud: readme-debian-contains-debmake-template
-E: nautilus-mailru-cloud: description-is-dh_make-template
-E: nautilus-mailru-cloud: maintainer-address-malformed Leonid <leonid@unknown>
+W: nautilus-mailru-cloud: extended-description-line-too-long
 E: nautilus-mailru-cloud: section-is-dh_make-template
-W: nautilus-mailru-cloud: superfluous-clutter-in-homepage <insert the upstream URL, if relevant>
-W: nautilus-mailru-cloud: bad-homepage <insert the upstream URL, if relevant>
 Finished running lintian.
 Now signing changes and any dsc files...
- signfile nautilus-mailru-cloud_0.1-preview_amd64.changes Leonid <leonid@unknown>
-gpg: пропущено "Leonid <leonid@unknown>": секретный ключ не найден
-gpg: /tmp/debsign.GOOz5fRb/nautilus-mailru-cloud_0.1-preview_amd64.changes: clearsign failed: секретный ключ не найден
+ signfile nautilus-mailru-cloud_0.1-preview_amd64.changes Leonid Stlyarov <lndstol@gmail.com>
+gpg: пропущено "Leonid Stlyarov <lndstol@gmail.com>": секретный ключ не найден
+gpg: /tmp/debsign.kPtPCNX6/nautilus-mailru-cloud_0.1-preview_amd64.changes: clearsign failed: секретный ключ не найден
 debsign: gpg error occurred!  Aborting....

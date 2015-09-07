@@ -1,5 +1,6 @@
 
 CXX := clang++
+PKG_CXX := g++
 
 OUT_DIR  := bin
 INT_DIR  := ./obj
@@ -9,6 +10,7 @@ PYTHON_GUI_FILE_NAME := nautilus_mailru_cloud_gtk_gui_services.py
 CPP_FILES := $(wildcard ./*.cpp)
 OBJ_FILES := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
 OBJ_FILES_REL := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=-rel.o)))
+OBJ_FILES_PKG := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=-pkg.o)))
 
 LINK_FLAGS := $(shell pkg-config libnautilus-extension --libs)  \
 			  $(shell pkg-config --libs libnotify)     \
@@ -23,6 +25,7 @@ COMPILE_FLAGS := $(LOCAL_INCLUDES) $(shell pkg-config --cflags libnotify) \
 
 #==================================================================================================
 # debug build
+
 
 extension: extension_so
 	echo "copying to nautilus extensions dir"
@@ -52,12 +55,6 @@ $(INT_DIR)/%.o: ./%.cpp
 	
 #==================================================================================================
 # release build	
-	
-	
-deb_package: extension_so_release
-	echo "building deb package ..."
-	cp $(OUT_DIR)/$(EXT_NAME).so ./pkg/nautilus-mailru-cloud-0.1-preview/$(EXT_NAME).so
-	cd ./pkg/nautilus-mailru-cloud-0.1-preview; debuild -b
 
 	
 extension_release: extension_so_release
@@ -74,6 +71,28 @@ extension_so_release: $(OBJ_FILES_REL)
 $(INT_DIR)/%-rel.o: ./%.cpp
 	echo "compiling $<"  
 	$(CXX) -c -std=c++11 -fPIC -O3 -fdata-sections -ffunction-sections -o $@  $(COMPILE_FLAGS) $<
+	
+	
+	
+#==================================================================================================
+# binary package build	
+	
+	
+deb_package: extension_so_pkg
+	echo "building deb package ..."
+	cp $(OUT_DIR)/$(EXT_NAME).so ./pkg/nautilus-mailru-cloud-0.1-preview/$(EXT_NAME).so
+	cp ./$(PYTHON_GUI_FILE_NAME) ./pkg/nautilus-mailru-cloud-0.1-preview/$(PYTHON_GUI_FILE_NAME)
+	cd ./pkg/nautilus-mailru-cloud-0.1-preview; debuild -b
+	
+
+extension_so_pkg: $(OBJ_FILES_PKG)
+	echo "linking release version (for binary package) of " $(OUT_DIR)/$(EXT_NAME).so 
+	$(PKG_CXX) -fPIC -shared -O3 -Wl,--gc-sections -o $(OUT_DIR)/$(EXT_NAME).so $^ $(LINK_FLAGS)
+	
+
+$(INT_DIR)/%-pkg.o: ./%.cpp
+	echo "(pkg) compiling $<"  
+	$(PKG_CXX) -c -std=c++11 -fPIC -O3 -fdata-sections -ffunction-sections -o $@  $(COMPILE_FLAGS) $<
 	
 	
 clean:

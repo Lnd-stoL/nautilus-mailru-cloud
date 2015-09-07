@@ -3,12 +3,12 @@ Upstream-Name: nautilus-mailru-cloud
 Source: <url://example.com>
 
 Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
+Copyright: 2015 Leonid Stolyarov <lndstol@gmail.com>
+           2015 Alexey Gusev
 License: GPL-3.0+
 
 Files: debian/*
-Copyright: 2015 Leonid <leonid@unknown>
+Copyright: 2015 Leonid Stolyarov <lndstol@gmail.com>
 License: GPL-3.0+
 
 License: GPL-3.0+
