@@ -148,7 +148,7 @@ void CloudMailRuExtension::updateFileInfo(FileInfo *file)
         return;    // system hidden files are never synced
 
     // now update active folders set
-    if (_updateActiveFolders.size() >= 3) {
+    if (_updateActiveFolders.size() >= _config.get<int>("SyncTweaks.max_active_folders")) {
         // we need to push out some dir
         auto outCandidate = _updateActiveFolders.begin();
         for (auto i = _updateActiveFolders.begin(); i != _updateActiveFolders.end(); ++i) {
@@ -192,7 +192,8 @@ string CloudMailRuExtension::_cloudPath(const FileInfo& file)
 
 void CloudMailRuExtension::_folderUpdateTask(const string &dirName)
 {
-    if (duration_cast<milliseconds>(system_clock::now() - _cachedCloudFolders[dirName].lastUpdateTime).count() < 1500) {
+    if (duration_cast<milliseconds>(system_clock::now() - _cachedCloudFolders[dirName].lastUpdateTime).count() <
+            _config.get<int>("SyncTweaks.min_update_interval")) {
         std::cout << extension_info::logPrefix << "directory update skipped for " << dirName << std::endl;
         return;
     }
@@ -314,7 +315,7 @@ void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir, 
     updateTimeoutMs += rand() % 1000;
     updateTimeoutMs += sequenceNum * 1000;
 
-    if (!file->isStillActual() || sequenceNum > 5) {
+    if (!file->isStillActual() || sequenceNum > _config.get<int>("SyncTweaks.max_file_updates")) {
         delete file;
         return;
     }
@@ -343,7 +344,10 @@ void CloudMailRuExtension::_writeDefaultConfig()
     _config.add("Emblems.sync_in_progress", "stock_refresh");
     _config.add("Emblems.sync_shared", "applications-roleplaying");
 
-    _config.add("SyncTweaks.in_progress_update_interval", 3000);
+    _config.add("SyncTweaks.in_progress_update_interval", 4000);
+    _config.add("SyncTweaks.min_update_interval", 2000);
+    _config.add("SyncTweaks.max_active_folders", 3);
+    _config.add("SyncTweaks.max_file_updates", 10);
 }
 
 
