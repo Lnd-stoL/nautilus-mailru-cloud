@@ -51,5 +51,5 @@ Finished running lintian.
 Now signing changes and any dsc files...
  signfile nautilus-mailru-cloud_0.1-preview_amd64.changes Leonid Stlyarov <lndstol@gmail.com>
 gpg: пропущено "Leonid Stlyarov <lndstol@gmail.com>": секретный ключ не найден
-gpg: /tmp/debsign.kPtPCNX6/nautilus-mailru-cloud_0.1-preview_amd64.changes: clearsign failed: секретный ключ не найден
+gpg: /tmp/debsign.EFLixtyb/nautilus-mailru-cloud_0.1-preview_amd64.changes: clearsign failed: секретный ключ не найден
 debsign: gpg error occurred!  Aborting....

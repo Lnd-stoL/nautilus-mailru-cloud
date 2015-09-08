@@ -51,6 +51,13 @@ private:
     };
 
 
+    struct _CachedFolderInfo
+    {
+        time_point<system_clock>  lastUpdateTime;
+        time_point<system_clock>  lastAskedToUpdateTime;
+    };
+
+
 private:
     GUIProvider  *_gui = nullptr;
     CloudMailRuRestAPI  _cloudAPI;
@@ -60,6 +67,9 @@ private:
     b_pt::ptree  _config;
 
     std::unordered_map<string, CloudMailRuRestAPI::CloudFileInfo>  _cachedCloudFiles;
+    std::unordered_map<string, _CachedFolderInfo>                  _cachedCloudFolders;
+
+    std::set<string>  _updateActiveFolders;
 
     bool  _running = true;
     unsigned long  _taskCounter = 1;
@@ -80,13 +90,14 @@ private:
     static b_fs::path _userHomeDirPath();
     string _cloudPath(const FileInfo &file);
 
-    void _netUpdateDirectory(const string &dirName);
+    void _folderUpdateTask(const string &dirName);
+    bool _planDelayedFolderUpdate(const string &dirName, int updateTimeoutMs);
     bool _updateFileSyncState(FileInfo &file);
 
     void _enqueueAsyncTask(const string &id, time_point<system_clock> startTime, function<void()> task);
     bool _isTaskOnQueue(const string &id);
 
-    void _fileUpdateTask(FileInfo *file, string fileCloudDir);
+    void _fileUpdateTask(FileInfo *file, string fileCloudDir, int sequenceNum);
 
 
 public:

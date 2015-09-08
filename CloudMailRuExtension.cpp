@@ -67,10 +67,11 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
         string link = _cloudAPI.getPublicLinkTo(fileCloudPath);
         std::cout << extension_info::logPrefix << "got publink link to " << fileCloudPath << " : " << link << std::endl;
 
-        _gui->invokeInGUIThread([this, file, fileName, link]() {
+        _gui->invokeInGUIThread([this, file, fileName, link, fileCloudPath]() {
             if (link != "") {
                 _gui->copyToClipboard(link);
                 _gui->showCopyPublicLinkNotification(string("Общедоступная ссылка на '") + fileName + "' скопированна в буфер обмена.");
+                _cachedCloudFiles[fileCloudPath].weblink = link;    // manually emulate thuis change to avoid net request
                 file->invalidateExtensionInfo();
             } else {
                 _gui->showCopyPublicLinkNotification(string("Не удалось скопировать ссылку на '") + fileName + "'.");
@@ -95,6 +96,7 @@ void CloudMailRuExtension::getContextMenuItemsForFile(FileInfo *file, vector<Fil
             _gui->invokeInGUIThread([this, file, fileName, fileCloudPath, success]() {
                 if (success) {
                     _gui->showCopyPublicLinkNotification(string("Ссылка общего доступа на '") + fileName + "' удалена.");
+                    _cachedCloudFiles[fileCloudPath].weblink = "";    // manually emulate thuis change to avoid net request
                     file->invalidateExtensionInfo();
                 } else {
                     _gui->showCopyPublicLinkNotification(string("Не удалось удалить ссылку общего доступа на '") + fileName + "'.");
@@ -140,17 +142,32 @@ void CloudMailRuExtension::updateFileInfo(FileInfo *file)
 
     string fileCloudPath = _cloudPath(*file);
     string fileCloudDir = b_fs::path(fileCloudPath).parent_path().string();
+    _cachedCloudFolders[fileCloudDir].lastAskedToUpdateTime = system_clock::now();
 
     if (_isOneOfCloudHiddenSystemFiles(fileCloudPath))
         return;    // system hidden files are never synced
 
+    // now update active folders set
+    if (_updateActiveFolders.size() >= 3) {
+        // we need to push out some dir
+        auto outCandidate = _updateActiveFolders.begin();
+        for (auto i = _updateActiveFolders.begin(); i != _updateActiveFolders.end(); ++i) {
+            if (_cachedCloudFolders[*outCandidate].lastAskedToUpdateTime >
+                _cachedCloudFolders[*i].lastAskedToUpdateTime) {
+                outCandidate = i;
+            }
+        }
+        _updateActiveFolders.erase(outCandidate);
+    }
+    _updateActiveFolders.insert(fileCloudDir);
+
     if (!_isTaskOnQueue(fileCloudDir)) {    // this is to prevent directory net update for each file in a folder
         _enqueueAsyncTask(fileCloudDir, system_clock::now(),
-                          std::bind(&CloudMailRuExtension::_netUpdateDirectory, this, fileCloudDir));
+                          std::bind(&CloudMailRuExtension::_folderUpdateTask, this, fileCloudDir));
     }
 
     _enqueueAsyncTask(fileCloudDir + "#" + fileCloudPath, system_clock::now(),
-                      std::bind(&CloudMailRuExtension::_fileUpdateTask, this, file, fileCloudDir));
+                      std::bind(&CloudMailRuExtension::_fileUpdateTask, this, file, fileCloudDir, 0));
 }
 
 
@@ -173,8 +190,13 @@ string CloudMailRuExtension::_cloudPath(const FileInfo& file)
 }
 
 
-void CloudMailRuExtension::_netUpdateDirectory(const string &dirName)
+void CloudMailRuExtension::_folderUpdateTask(const string &dirName)
 {
+    if (duration_cast<milliseconds>(system_clock::now() - _cachedCloudFolders[dirName].lastUpdateTime).count() < 1500) {
+        std::cout << extension_info::logPrefix << "directory update skipped for " << dirName << std::endl;
+        return;
+    }
+
     std::cout << extension_info::logPrefix << "started getting direcory contents for " << dirName << std::endl;
 
     vector<CloudMailRuRestAPI::CloudFileInfo> dirItems;
@@ -185,9 +207,12 @@ void CloudMailRuExtension::_netUpdateDirectory(const string &dirName)
         _cachedCloudFiles[nextItem.path] = nextItem;
     }
 
+    _cachedCloudFolders[dirName].lastUpdateTime = system_clock::now();
+
     std::cout << extension_info::logPrefix << "updated directory " << dirName
                 << " at " << system_clock::now().time_since_epoch().count() << std::endl;
 }
+
 
 // returns true if subsequent updates are required
 bool CloudMailRuExtension::_updateFileSyncState(FileInfo &file)
@@ -283,23 +308,21 @@ CloudMailRuExtension::~CloudMailRuExtension()
 }
 
 
-void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir)
+void CloudMailRuExtension::_fileUpdateTask(FileInfo *file, string fileCloudDir, int sequenceNum)
 {
     int updateTimeoutMs = _config.get<int>("SyncTweaks.in_progress_update_interval");
+    updateTimeoutMs += rand() % 1000;
+    updateTimeoutMs += sequenceNum * 1000;
 
-    if (!file->isStillActual()) {
+    if (!file->isStillActual() || sequenceNum > 5) {
         delete file;
         return;
     }
 
     if (_updateFileSyncState(*file)) {
-        if (!_isTaskOnQueue(fileCloudDir)) {
-            _enqueueAsyncTask(fileCloudDir, system_clock::now() + milliseconds(updateTimeoutMs),
-                              std::bind(&CloudMailRuExtension::_netUpdateDirectory, this, fileCloudDir));
-        }
-
-        _enqueueAsyncTask(fileCloudDir + "#" + _cloudPath(*file), system_clock::now() + milliseconds(updateTimeoutMs),
-                          std::bind(&CloudMailRuExtension::_fileUpdateTask, this, file, fileCloudDir));
+        if (!_planDelayedFolderUpdate(fileCloudDir, updateTimeoutMs))
+            delete file;
+            return;    // the chain for this file was cut
     } else {
         delete file;
     }
@@ -320,7 +343,7 @@ void CloudMailRuExtension::_writeDefaultConfig()
     _config.add("Emblems.sync_in_progress", "stock_refresh");
     _config.add("Emblems.sync_shared", "applications-roleplaying");
 
-    _config.add("SyncTweaks.in_progress_update_interval", 8000);
+    _config.add("SyncTweaks.in_progress_update_interval", 3000);
 }
 
 
@@ -358,4 +381,21 @@ void CloudMailRuExtension::_ensureCloudAPIIsReady()
         }
 
     } while (!_cloudAPI.loggedIn());
+}
+
+
+bool CloudMailRuExtension::_planDelayedFolderUpdate(const string &dirName, int updateTimeoutMs)
+{
+    string taskId = dirName + "#delayed";
+
+    if (_updateActiveFolders.find(dirName) == _updateActiveFolders.end()) {
+        return false;
+    }
+
+    if (!_isTaskOnQueue(taskId)) {
+        _enqueueAsyncTask(taskId, system_clock::now() + milliseconds(updateTimeoutMs),
+                          std::bind(&CloudMailRuExtension::_folderUpdateTask, this, dirName));
+    }
+
+    return true;
 }

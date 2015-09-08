@@ -9,6 +9,8 @@
       <sourceFolder url="file://$MODULE_DIR$/CloudMailRuExtension.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CloudMailRuRestAPI.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CloudMailRuRestAPI.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ExtensionError.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ExtensionError.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/FileInfo.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/GUIProvider.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/GUIProvider.hpp" isTestSource="false" />

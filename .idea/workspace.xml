@@ -11,25 +11,15 @@
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7373954c-dd81-4853-94d0-95fbaec4b28a" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/README.Debian" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/README.source" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/usr/share/doc/nautilus-mailru-cloud/README.Debian" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/usr/share/doc/nautilus-mailru-cloud/changelog.Debian.gz" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/usr/share/doc/nautilus-mailru-cloud/changelog.Debian.gz" />
+    <list default="true" id="7373954c-dd81-4853-94d0-95fbaec4b28a" name="Default" comment="python auth dialog remake">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud_0.1-preview_amd64.deb" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud_0.1-preview_amd64.deb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CloudMailRuExtension.cpp" afterPath="$PROJECT_DIR$/CloudMailRuExtension.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Makefile" afterPath="$PROJECT_DIR$/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/changelog" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/changelog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/control" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/control" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CloudMailRuExtension.hpp" afterPath="$PROJECT_DIR$/CloudMailRuExtension.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/DEBIAN/control" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/DEBIAN/control" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/copyright" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/copyright" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/usr/share/doc/nautilus-mailru-cloud/copyright" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/usr/share/doc/nautilus-mailru-cloud/copyright" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/install" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/install" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/DEBIAN/md5sums" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud/DEBIAN/md5sums" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud.substvars" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud-0.1-preview/debian/nautilus-mailru-cloud.substvars" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/nautilus-mailru-cloud.iml" afterPath="$PROJECT_DIR$/.idea/nautilus-mailru-cloud.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud_0.1-preview_amd64.build" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud_0.1-preview_amd64.build" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud_0.1-preview_amd64.changes" afterPath="$PROJECT_DIR$/pkg/nautilus-mailru-cloud_0.1-preview_amd64.changes" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nautilus_mailru_cloud_gtk_gui_services.py" afterPath="$PROJECT_DIR$/nautilus_mailru_cloud_gtk_gui_services.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="nautilus-mailru-cloud.iws" />
@@ -51,11 +41,81 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="CloudMailRuExtension.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="56" column="55" selection-start-line="56" selection-start-column="34" selection-end-line="56" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="CloudMailRuExtension.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.73557186">
-              <caret line="320" column="0" selection-start-line="320" selection-start-column="0" selection-end-line="320" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.6954644">
+              <caret line="104" column="15" selection-start-line="104" selection-start-column="15" selection-end-line="104" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NautilusExtension.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/NautilusExtension.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="322" column="0" selection-start-line="322" selection-start-column="0" selection-end-line="322" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GUIProvider.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GUIProvider.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GUIProvider.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GUIProvider.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExtensionError.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ExtensionError.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CloudMailRuRestAPI.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CloudMailRuRestAPI.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -69,6 +129,29 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/CloudMailRuHttpAPI.cpp" />
+        <option value="$PROJECT_DIR$/CloudMailRuHttpAPI.h" />
+        <option value="$PROJECT_DIR$/Test.cpp" />
+        <option value="$PROJECT_DIR$/GUIProvider.h" />
+        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.h" />
+        <option value="$PROJECT_DIR$/nautilus_extension.cpp" />
+        <option value="$PROJECT_DIR$/URLTools.hpp" />
+        <option value="$PROJECT_DIR$/URLTools.cpp" />
+        <option value="$PROJECT_DIR$/MenuItem.hpp" />
+        <option value="$PROJECT_DIR$/FileInfo.hpp" />
+        <option value="$PROJECT_DIR$/extension_info.hpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AuthDialogGtk.hpp" />
+        <option value="$PROJECT_DIR$/AuthDialogGtk.cpp" />
+        <option value="$PROJECT_DIR$/Makefile" />
+        <option value="$PROJECT_DIR$/nautilus_mailru_cloud_gtk_gui_services.py" />
+        <option value="$PROJECT_DIR$/ExtensionError.hpp" />
+        <option value="$PROJECT_DIR$/GUIProvider.hpp" />
+        <option value="$PROJECT_DIR$/NautilusExtension.cpp" />
+        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.cpp" />
+        <option value="$PROJECT_DIR$/GUIProvider.cpp" />
+        <option value="$PROJECT_DIR$/CloudMailRuRestAPI.hpp" />
+        <option value="$PROJECT_DIR$/CloudMailRuExtension.hpp" />
         <option value="$PROJECT_DIR$/CloudMailRuExtension.cpp" />
       </list>
     </option>
@@ -80,6 +163,7 @@
   <component name="NamedScopeManager">
     <order />
   </component>
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
     <option name="x" value="63" />
     <option name="y" value="24" />
@@ -134,9 +218,31 @@
   <component name="PropertiesComponent">
     <property name="recentsLimit" value="5" />
     <property name="FullScreen" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Application.Build All">
+  <component name="RunManager" selected="Application.nautilus_mailru_cloud">
+    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="nautilus_mailru_cloud" TARGET_NAME="nautilus_mailru_cloud" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <pass-parent-envs>true</pass-parent-envs>
       <envs />
       <method />
     </configuration>
@@ -159,11 +265,84 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7373954c-dd81-4853-94d0-95fbaec4b28a" name="Default" comment="" />
-      <created>1441637756649</created>
+      <changelist id="73f9cb82-7c44-469a-a4ec-db0dc6a33726" name="Default" comment="" />
+      <created>1440619223695</created>
       <option name="number" value="Default" />
-      <updated>1441637756649</updated>
+      <updated>1440619223695</updated>
     </task>
+    <task id="LOCAL-00001" summary="New asyc tasks queue (with ability to pin task to a desired start time) + file state subsequent updates (not so stable yet)  + public link remove">
+      <created>1441270756550</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1441270756550</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fixed urlencode so that files and filders with russian names are no longer a problem">
+      <created>1441272767790</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1441272767790</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Translated to Russian">
+      <created>1441307601067</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1441307601067</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Improved config file with more options">
+      <created>1441310209016</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1441310209016</updated>
+    </task>
+    <task id="LOCAL-00005" summary="default config added">
+      <created>1441363738045</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1441363738045</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added some gui components via external python script">
+      <created>1441370612626</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1441370612626</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Password entry dialog">
+      <created>1441442354518</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1441442354518</updated>
+    </task>
+    <task id="LOCAL-00008" summary="working authorization with store4d cookies instead of password">
+      <created>1441559060586</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1441559060586</updated>
+    </task>
+    <task id="LOCAL-00009" summary="changed communication between python GUI (+ some efforts on native gtk)">
+      <created>1441616262272</created>
+      <option name="number" value="00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1441616262272</updated>
+    </task>
+    <task id="LOCAL-00010" summary="python auth dialog remake">
+      <created>1441630832356</created>
+      <option name="number" value="00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1441630832356</updated>
+    </task>
+    <task id="LOCAL-00011" summary="simple error handling">
+      <created>1441657733687</created>
+      <option name="number" value="00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1441657733687</updated>
+    </task>
+    <task id="LOCAL-00012" summary="added some basic error checking (=&gt; improved stability)">
+      <created>1441660827458</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1441660827458</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -172,23 +351,23 @@
     <layout>
       <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19347706" sideWeight="0.51934826" order="3" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35365853" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32723576" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.398167" sideWeight="0.50193477" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32892057" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47764227" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19347706" sideWeight="0.48065174" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294766" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35234216" sideWeight="0.49806523" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35365853" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47764227" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32825205" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35264227" sideWeight="0.49806523" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -202,17 +381,130 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="New asyc tasks queue (with ability to pin task to a desired start time) + file state subsequent updates (not so stable yet)  + public link remove" />
+    <MESSAGE value="Fixed urlencode so that files and filders with russian names are no longer a problem" />
+    <MESSAGE value="Translated to Russian" />
+    <MESSAGE value="Improved config file with more options" />
+    <MESSAGE value="default config added" />
+    <MESSAGE value="Added some gui components via external python script" />
+    <MESSAGE value="Password entry dialog" />
+    <MESSAGE value="working authorization with store4d cookies instead of password" />
+    <MESSAGE value="changed communication between python GUI (+ some efforts on native gtk)" />
+    <MESSAGE value="python auth dialog remake" />
+    <MESSAGE value="simple error handling" />
+    <MESSAGE value="added some basic error checking (=&gt; improved stability)" />
+    <option name="LAST_COMMIT_MESSAGE" value="added some basic error checking (=&gt; improved stability)" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file:///usr/include/unistd.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3423326">
+          <caret line="583" column="11" selection-start-line="583" selection-start-column="11" selection-end-line="583" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExtensionError.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dep/cpp-netlib-0.9.4/include/boost/network/protocol/http/tags.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.90712744">
+          <caret line="33" column="60" selection-start-line="33" selection-start-column="60" selection-end-line="33" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/boost/system/system_error.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33261338">
+          <caret line="21" column="31" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GUIProvider.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GUIProvider.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dep/cpp-netlib-0.9.4/include/boost/network/protocol/http/client/facade.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.475162">
+          <caret line="35" column="28" selection-start-line="35" selection-start-column="28" selection-end-line="35" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dep/cpp-netlib-0.9.4/include/boost/network/protocol/http/client.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27213824">
+          <caret line="33" column="24" selection-start-line="33" selection-start-column="24" selection-end-line="33" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CloudMailRuRestAPI.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NautilusExtension.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="322" column="0" selection-start-line="322" selection-start-column="0" selection-end-line="322" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="55" selection-start-line="56" selection-start-column="34" selection-end-line="56" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CloudMailRuExtension.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.73557186">
-          <caret line="320" column="0" selection-start-line="320" selection-start-column="0" selection-end-line="320" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.6954644">
+          <caret line="104" column="15" selection-start-line="104" selection-start-column="15" selection-end-line="104" selection-end-column="15" />
           <folding />
         </state>
       </provider>

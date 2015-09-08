@@ -15,8 +15,8 @@ Changes:
  .
    * Initial Release (early preview, mainly for testing).
 Checksums-Sha1: 
- 0b58dab5ca70990805524db8adf1f0b0b5e1d261 573008 nautilus-mailru-cloud_0.1-preview_amd64.deb
+ 8413a72954000f531604d0c3313722496f962916 583628 nautilus-mailru-cloud_0.1-preview_amd64.deb
 Checksums-Sha256: 
- ea3e76ac72aefadce005f8deca9f85a8e65c9f42b9eb382768cfd3a955304d48 573008 nautilus-mailru-cloud_0.1-preview_amd64.deb
+ a167cdec39e9cebef34c7d35a51d5c4970ae615f28e64d8a6172e10f5a7f4c57 583628 nautilus-mailru-cloud_0.1-preview_amd64.deb
 Files: 
- 6f06664714fbc4d11dc4646b42ff51ea 573008 unknown optional nautilus-mailru-cloud_0.1-preview_amd64.deb
+ 5972c7d0e80a626cdbfe973795f9baf9 583628 unknown optional nautilus-mailru-cloud_0.1-preview_amd64.deb
